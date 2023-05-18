@@ -28,4 +28,19 @@ public class Manager extends Person
         this.clinicName = clinicName;
     }
 
+    @Override
+    public boolean addDoctor(Doctor doctor) {
+        return doctors.add(doctor);
+    }
+
+    @Override
+    public boolean removeDoctor(Doctor doctor) {
+        return doctors.remove(doctor);
+    }
+
+    @Override
+    public ArrayList<Doctor> getDoctors() {
+        return doctors;
+    }
+
 }
