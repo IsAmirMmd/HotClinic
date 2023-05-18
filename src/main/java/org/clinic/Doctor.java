@@ -41,7 +41,8 @@ public class Doctor extends Person {
             if (medication.getQuantity() == 0) {
                 System.out.println("no more of " + medication.getName() + "!");
             } else {
-                Patient.Prescription prescription = new Patient.Prescription(new java.util.Date(), medication.getName(), this, patient);
+                Patient.Prescription prescription = new Patient.Prescription(new java.util.Date(), medication.getName(),
+                        this, patient);
                 patient.addPrescription(prescription);
                 return prescription;
             }
