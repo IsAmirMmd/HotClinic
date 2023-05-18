@@ -67,5 +67,37 @@ public class Manager extends Person
         return allPrescriptions;
     }
 
-   
+    @Override
+    public ArrayList<Drug> getAllDrugs() {
+        return drugs;
+    }
+
+    @Override
+    public boolean addDrug(Drug drug) {
+        return drugs.add(drug);
+    }
+
+    @Override
+    public boolean removeDrug(Drug drug) {
+        return drugs.remove(drug);
+    }
+
+    public Drug getDrugByName(String name) {
+        for (Drug drug : drugs) {
+            if (drug.getName().equals(name)) {
+                return drug;
+            }
+        }
+        return null;
+    }
+
+    public Drug getDrugByUid(UUID uid) {
+        for (Drug drug : drugs) {
+            if (drug.getUid().equals(uid)) {
+                return drug;
+            }
+        }
+        return null;
+    }
+
 }
