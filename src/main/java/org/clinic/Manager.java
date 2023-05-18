@@ -43,4 +43,29 @@ public class Manager extends Person
         return doctors;
     }
 
+    @Override
+    public boolean addPatient(Patient patient) {
+        return patients.add(patient);
+    }
+
+    @Override
+    public boolean removePatient(Patient patient) {
+        return patients.remove(patient);
+    }
+
+    @Override
+    public ArrayList<Patient> getPatients() {
+        return patients;
+    }
+
+    @Override
+    public ArrayList<Patient.Prescription> getAllPrescriptions() {
+        ArrayList<Patient.Prescription> allPrescriptions = new ArrayList<>();
+        for (Patient patient : patients) {
+            allPrescriptions.addAll(patient.getPrescriptions());
+        }
+        return allPrescriptions;
+    }
+
+   
 }
