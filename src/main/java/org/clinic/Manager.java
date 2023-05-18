@@ -100,4 +100,11 @@ public class Manager extends Person
         return null;
     }
 
+    public void addNurse(Nurse nurse) {
+        nurses.add(nurse);
+    }
+
+    public void removeNurse(Nurse nurse) {
+        nurses.remove(nurse);
+    }
 }
