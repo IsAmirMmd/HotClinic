@@ -264,7 +264,17 @@ public class BaseMenu {
     }
 
 
-  
+    public static void managePatient() {
+
+    }
+
+
+
+    public static void manageDrugs() {
+    }
+
+    public static void patientPanel() {
+    }
     public static void sleepTime(int time) {
         try {
             Thread.sleep(time);
