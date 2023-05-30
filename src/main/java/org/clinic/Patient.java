@@ -27,9 +27,6 @@ public class Patient extends Person {
         medications.add(medication);
     }
 
-    public boolean removeMedication(String medication) {
-        return medications.remove(medication);
-    }
 
     public ArrayList<Prescription> getPrescriptions() {
         return prescriptions;
@@ -39,18 +36,18 @@ public class Patient extends Person {
         prescriptions.add(prescription);
     }
 
-    public boolean removePrescription(Prescription prescription) {
-        return prescriptions.remove(prescription);
+    public void setIllness(String illness) {
+        this.illness = illness;
     }
 
     public static class Prescription {
         private Date date;
-        private String medication;
+        private ArrayList<Drug> medication;
         private Doctor doctor;
         private String patientName;
         private long patientId;
 
-        public Prescription(Date date, String medication, Doctor doctor, Patient patient) {
+        public Prescription(Date date, ArrayList<Drug> medication, Doctor doctor, Patient patient) {
             this.date = date;
             this.medication = medication;
             this.doctor = doctor;
@@ -62,7 +59,7 @@ public class Patient extends Person {
             return date;
         }
 
-        public String getMedication() {
+        public ArrayList<Drug> getMedication() {
             return medication;
         }
 
@@ -77,5 +74,16 @@ public class Patient extends Person {
         public long getPatientId() {
             return patientId;
         }
+    }
+
+    public static ArrayList<Patient> firstLoad() {
+        ArrayList<Patient> patients = new ArrayList<>();
+
+        patients.add(new Patient("Ali", "Tehran, Enghelab Street", "09123456789", null));
+        patients.add(new Patient("Sara", "Isfahan, Chaharbagh Street", "09123456789", null));
+        patients.add(new Patient("Mohammad", "Shiraz, Hafez Street", "09123456789", null));
+        patients.add(new Patient("Maryam", "Tabriz, Saat Square", "09123456789", null));
+        patients.add(new Patient("Hossein", "Mashhad, Imam Reza Street", "09123456789", null));
+        return patients;
     }
 }
