@@ -1,5 +1,6 @@
 package org.clinic;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Drug {
@@ -35,4 +36,22 @@ public class Drug {
         this.quantity = quantity;
         this.available = quantity > 0;
     }
+
+    public static ArrayList<Drug> firstLoad() {
+        ArrayList<Drug> drugs = new ArrayList<>();
+
+        drugs.add(new Drug("Ibuprofen", 10));
+        drugs.add(new Drug("Acetaminophen", 7));
+        drugs.add(new Drug("Aspirin", 8));
+        drugs.add(new Drug("Lisinopril", 6));
+        drugs.add(new Drug("Atorvastatin", 9));
+        drugs.add(new Drug("Metformin", 11));
+        drugs.add(new Drug("Albuterol", 12));
+        drugs.add(new Drug("Furosemide", 13));
+        drugs.add(new Drug("Omeprazole", 15));
+        drugs.add(new Drug("Losartan", 14));
+
+        return drugs;
+    }
+
 }
