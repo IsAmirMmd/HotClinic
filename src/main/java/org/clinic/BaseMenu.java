@@ -275,15 +275,15 @@ public class BaseMenu {
         num = scanner.nextInt();
         switch (num) {
             case 1:
-                addNurse();
+                addPatients();
                 break;
 
             case 2:
-                removeNurse();
+                removePatients();
                 break;
 
             case 3:
-                showAllNurse();
+                showAllPatients();
                 break;
 
             case 0:
@@ -362,6 +362,7 @@ public class BaseMenu {
 
 
     public static void manageDrugs() {
+        
     }
 
     public static void patientPanel() {
