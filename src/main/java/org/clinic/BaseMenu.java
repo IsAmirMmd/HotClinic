@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public class BaseMenu {
     public static int num;
     public static Scanner scanner = new Scanner(System.in);
-    public static ArrayList<Patient> patients = new ArrayList<>();
-    public static ArrayList<Doctor> doctors = new ArrayList<>();
-    public static ArrayList<Nurse> nurses = new ArrayList<>();
-    public static ArrayList<Drug> drugs = new ArrayList<>();
-    public static Manager manager = new Manager("amirMmd", null, null, "N.I.T");
+    public static ArrayList<Patient> patients = Patient.firstLoad();
+    public static ArrayList<Doctor> doctors = Doctor.firstLoad();
+    public static ArrayList<Nurse> nurses = Nurse.firstLoad();
+    public static ArrayList<Drug> drugs = Drug.firstLoad();
+    public static Manager manager = new Manager("amirMmd", null, null, "N.I.T", patients, doctors, nurses, drugs);
 
 
     public static void baseMenu() {
@@ -41,6 +41,8 @@ public class BaseMenu {
         if (userName.equals("admin") && passWord.equals("admin")) {
             System.out.println("you enter data correctly");
             managerPanel(manager);
+        } else {
+            System.out.println("username or pasword is wrong");
         }
     }
 
@@ -438,9 +440,9 @@ public class BaseMenu {
         clearConsole();
         System.out.println("showing all drugs...");
         for (Drug drug : drugs) {
-            System.out.println("ID         :  " + drug.getUid());
-            System.out.println("name       :  " + drug.getName());
-            System.out.println("quantity    :  " + drug.getQuantity());
+            System.out.println("ID                :  " + drug.getUid());
+            System.out.println("name              :  " + drug.getName());
+            System.out.println("quantity          :  " + drug.getQuantity());
             System.out.println("availability      :  " + drug.isAvailable());
             System.out.println("     *******************     ");
         }
@@ -565,6 +567,7 @@ public class BaseMenu {
 
     public static void examineFromDoctor(Patient patient, Doctor doctor) {
         System.out.println("mr/ms " + patient.getName() + "you are talking to " + doctor.getName());
+        patient.setIllness(doctor.getSpecialty());
 //        nurse selector
         int NursesSize = nurses.size();
         int NursesNum = new Random().nextInt(NursesSize) + 1;
@@ -580,39 +583,64 @@ public class BaseMenu {
 //        end nusre selecting
         System.out.println("we select " + selectedNurse.getName() + " for you");
         selectedNurse.addPatient(patient);
-        System.out.println("Dr." + doctor.getName() + " select this drug for you :");
+        System.out.println("Dr." + doctor.getName() + " select these drugs for you :");
 //        selecting drug
         int DrugSize = drugs.size();
         int DrugNum = new Random().nextInt(DrugSize) + 1;
+        int DrugNum2 = new Random().nextInt(DrugSize) + 1;
         int Dcounter = 0;
-        Drug selectedDrug = null;
+        while (DrugNum2 == DrugNum) {
+            DrugNum2 = new Random().nextInt(DrugSize) + 1;
+        }
+        int j = 1;
+        ArrayList<Drug> drugArrayList = new ArrayList<>();
         for (Drug drug : drugs) {
             Dcounter++;
             if (Dcounter == DrugNum) {
-                selectedDrug = drug;
-                break;
+                drugArrayList.add(drug);
+                System.out.println(j + ". " + drug.getName());
+                j++;
+
+            } else if (Dcounter == DrugNum2) {
+                drugArrayList.add(drug);
+                System.out.println(j + ". " + drug.getName());
+                j++;
             }
         }
-        System.out.println(selectedDrug.getName());
 //        end of selecting drug
         System.out.println("wait until we are checking availability in drugStore ...");
-        if (selectedDrug.isAvailable()) {
-            System.out.println("well!\nwe have this drug");
-            doctor.writePrescription(patient, selectedDrug);
-        } else {
-            System.out.println("oops,we don't have this drug");
+        sleepTime(1000);
+//        loading
+        boolean drugBalance = true;
+        for (Drug drug : drugArrayList) {
+            if (drug.isAvailable()) {
+                System.out.println("well!\nwe have this " + drug.getName());
+            } else {
+                System.out.println("oops,we don't have this " + drug.getName());
+                drugBalance = false;
+            }
         }
+        if (drugBalance) {
+            doctor.writePrescription(patient, drugArrayList);
+        }
+
     }
 
     public static void prescriptions(Patient patient) {
         System.out.println("well you want to check your prescriptions...");
         System.out.println("here is all of your prescriptions :");
         int i = 1;
+        int j = 1;
         for (Patient.Prescription prescription : patient.getPrescriptions()) {
             System.out.println("number " + i + " :");
             System.out.println("You were examined in   : " + prescription.getDate());
             System.out.println("You were examined by   : " + prescription.getDoctor().getName());
-            System.out.println("Dr wrote you this drug : " + prescription.getMedication());
+            System.out.println("Dr wrote you this drug : ");
+            for (Drug drug : prescription.getMedication()) {
+                System.out.print("   ");
+                System.out.println(j + ". " + drug.getName());
+                j++;
+            }
             System.out.println("  *************     ");
         }
     }
