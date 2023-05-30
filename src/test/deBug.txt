@@ -1,0 +1,66 @@
+// Create a manager for the clinic
+        Manager manager = new Manager("Jenifer", "IRN", "05124785698", "HiHop");
+
+        // Create some doctors and nurses
+        Doctor doctor1 = new Doctor("Dr.John", "Frankfurt", "0915692323", "men");
+        Doctor doctor2 = new Doctor("Dr.Jane", "USA", "05135134758", "kids");
+
+        Nurse nurse1 = new Nurse("Mary Johnson", "saeedAbad", "96585522");
+        Nurse nurse2 = new Nurse("Bob Lee", "rezaAbad", "012345685");
+
+        // Add doctors and nurses to the manager's lists
+        manager.addDoctor(doctor1);
+        manager.addDoctor(doctor2);
+        manager.addNurse(nurse1);
+        manager.addNurse(nurse2);
+
+        // Create some patients
+        Patient patient1 = new Patient("Sara Lee", "AhmadAbad", "0557886545", "Hypertension");
+        Patient patient2 = new Patient("David Kim", "AhmadAbad", "0557886545", "Diabetes");
+        Patient patient3 = new Patient("Karen Lee", "AhmadAbad", "0557886545", "Asthma");
+
+        // Add patients to the manager's list of patients
+        manager.addPatient(patient1);
+        manager.addPatient(patient2);
+        manager.addPatient(patient3);
+
+        // Creating Drugs to the manager's list of drugs
+        Drug drug1 = new Drug("Lisinopril", 10);
+        Drug drug2 = new Drug("Metformin", 10);
+        Drug drug3 = new Drug("Penicillin", 10);
+
+        // Add Drugs to the manager's list of drugs
+        manager.addDrug(drug1);
+        manager.addDrug(drug2);
+        manager.addDrug(drug3);
+
+        // Assign patients to doctors and nurses
+        doctor1.addPatient(patient1);
+        doctor2.addPatient(patient2);
+        doctor1.addPatient(patient3);
+        nurse1.addPatient(patient3);
+
+        // Write some prescriptions for patients
+        doctor1.writePrescription(patient1, drug1);
+        doctor1.writePrescription(patient1, drug2);
+        doctor2.writePrescription(patient2, drug2);
+        doctor1.writePrescription(patient3, drug3);
+
+        // Print out the prescriptions for each patient
+        System.out.println("Prescriptions for " + patient1.getName() + ":");
+        for (Patient.Prescription p : patient1.getPrescriptions()) {
+            System.out.println(p.getMedication() + " prescribed by " + p.getDoctor().getName() + " on " + p.getDate());
+        }
+
+        System.out.println("Prescriptions for " + patient2.getName() + ":");
+        for (Patient.Prescription p : patient2.getPrescriptions()) {
+            System.out.println(p.getMedication() + " prescribed by " + p.getDoctor().getName() + " on " + p.getDate());
+        }
+
+        System.out.println("Prescriptions for " + patient3.getName() + ":");
+        for (Patient.Prescription p : patient3.getPrescriptions()) {
+            System.out.println(p.getMedication() + " prescribed by " + p.getDoctor().getName() + " on " + p.getDate());
+        }
+
+        // Remove a patient
+        manager.removePatient(patient1);

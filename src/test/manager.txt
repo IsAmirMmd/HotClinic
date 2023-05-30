@@ -1,0 +1,58 @@
+
+public class Clinic {
+    public static void main(String[] args) {
+        // Create a manager for the clinic
+        Manager manager = new Manager("ABC Clinic");
+
+        // Create some doctors and nurses
+        Doctor doctor1 = new Doctor(1, "John Doe", "Cardiology");
+        Doctor doctor2 = new Doctor(2, "Jane Smith", "Pediatrics");
+        Nurse nurse1 = new Nurse(1, "Mary Johnson");
+        Nurse nurse2 = new Nurse(2, "Bob Lee");
+
+        // Add doctors and nurses to the manager's lists
+        manager.addDoctor(doctor1);
+        manager.addDoctor(doctor2);
+        manager.addNurse(nurse1);
+        manager.addNurse(nurse2);
+
+        // Create some patients
+        Patient patient1 = new Patient(1, "Sara Lee", "Hypertension");
+        Patient patient2 = new Patient(2, "David Kim", "Diabetes");
+        Patient patient3 = new Patient(3, "Karen Lee", "Asthma");
+
+        // Add patients to the manager's list of patients
+        manager.addPatient(patient1);
+        manager.addPatient(patient2);
+        manager.addPatient(patient3);
+
+        // Assign patients to doctors and nurses
+        doctor1.addPatient(patient1);
+        doctor2.addPatient(patient2);
+        nurse1.addPatient(patient3);
+
+        // Write some prescriptions for patients
+        doctor1.writePrescription(patient1, "Lisinopril");
+        doctor2.writePrescription(patient2, "Metformin");
+
+        // Create some drugs
+        Drug drug1 = new Drug("Lisinopril", 10);
+        Drug drug2 = new Drug("Metformin", 20);
+
+        // Add drugs to the manager's list of drugs
+        manager.addDrug(drug1);
+        manager.addDrug(drug2);
+
+        // Access drug details
+        Drug lisinopril = manager.getDrugByName("Lisinopril");
+        System.out.println("Lisinopril quantity: " + lisinopril.getQuantity());
+        System.out.println("Lisinopril available: " + lisinopril.isAvailable());
+
+        Drug metformin = manager.getDrugByUid(drug2.getUid());
+        System.out.println("Metformin quantity: " + metformin.getQuantity());
+        System.out.println("Metformin available: " + metformin.isAvailable());
+
+        // Remove a patient
+        manager.removePatient(patient1);
+    }
+}

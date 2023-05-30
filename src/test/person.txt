@@ -1,0 +1,386 @@
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class Patient {
+    private int id;
+    private String name;
+    private String illness;
+    private List<String> medications;
+    private List<Prescription> prescriptions;
+
+    public Patient(int id, String name, String illness) {
+        this.id = id;
+        this.name = name;
+        this.illness = illness;
+        this.medications = new ArrayList<>();
+        this.prescriptions = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getIllness() {
+        return illness;
+    }
+
+    public List<String> getMedications() {
+        return medications;
+    }
+
+    public void addMedication(String medication) {
+        medications.add(medication);
+    }
+
+    public boolean removeMedication(String medication) {
+        return medications.remove(medication);
+    }
+
+    public List<Prescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void addPrescription(Prescription prescription) {
+        prescriptions.add(prescription);
+    }
+
+    public boolean removePrescription(Prescription prescription) {
+        return prescriptions.remove(prescription);
+    }
+
+    public static class Prescription {
+        private Date date;
+        private String medication;
+        private Doctor doctor;
+        private String patientName;
+        private int patientId;
+
+        public Prescription(Date date, String medication, Doctor doctor, Patient patient) {
+            this.date = date;
+            this.medication = medication;
+            this.doctor = doctor;
+            this.patientName = patient.getName();
+            this.patientId = patient.getId();
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public String getMedication() {
+            return medication;
+        }
+
+        public Doctor getDoctor() {
+            return doctor;
+        }
+
+        public String getPatientName() {
+            return patientName;
+        }
+
+        public int getPatientId() {
+            return patientId;
+        }
+    }
+}
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Doctor {
+    private int id;
+    private String name;
+    private String specialty;
+    private List<Patient> patients;
+
+    public Doctor(int id, String name, String specialty) {
+        this.id = id;
+        this.name = name;
+        this.specialty = specialty;
+        this.patients = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void addPatient(Patient patient) {
+        patients.add(patient);
+    }
+
+    public boolean removePatient(Patient patient) {
+        return patients.remove(patient);
+    }
+
+    public List<Patient.Prescription> getPatientPrescriptions(Patient patient) {
+        if (patients.contains(patient)) {
+            return patient.getPrescriptions();
+        }
+        return null;
+    }
+
+    public Patient.Prescription writePrescription(Patient patient, String medication) {
+        if (patients.contains(patient)) {
+            Patient.Prescription prescription = new Patient.Prescription(new java.util.Date(), medication, this, patient);
+            patient.addPrescription(prescription);
+            return prescription;
+        }
+        return null;
+    }
+}
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Nurse {
+    private int id;
+    private String name;
+    private List<Patient> patients;
+
+    public Nurse(int id, String name) {
+        this.id = id;
+        this.name = name;
+        this.patients = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void addPatient(Patient patient) {
+        patients.add(patient);
+    }
+
+    public boolean removePatient(Patient patient) {
+        return patients.remove(patient);
+    }
+
+    public List<Patient.Prescription> getPatientPrescriptions(Patient patient) {
+        if (patients.contains(patient)) {
+            return patient.getPrescriptions();
+        }
+        return null;
+    }
+}
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+public class Manager implements DoctorManagement, PatientManagement, PrescriptionManagement, DrugManagement {
+    private String clinicName;
+    private List<Patient> patients;
+    private List<Doctor> doctors;
+    private List<Nurse> nurses;
+    private List<Drug> drugs;
+
+    public Manager(String clinicName) {
+        this.clinicName = clinicName;
+        this.patients = new ArrayList<>();
+        this.doctors = new ArrayList<>();
+        this.nurses = new ArrayList<>();
+        this.drugs = new ArrayList<>();
+    }
+
+    public String getClinicName() {
+        return clinicName;
+    }
+
+    public void setClinicName(String clinicName) {
+        this.clinicName = clinicName;
+    }
+
+    @Override
+    public boolean addDoctor(Doctor doctor) {
+        return doctors.add(doctor);
+    }
+
+    @Override
+    public boolean removeDoctor(Doctor doctor) {
+        return doctors.remove(doctor);
+    }
+
+    @Override
+    public List<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    @Override
+    public boolean addPatient(Patient patient) {
+        return patients.add(patient);
+    }
+
+    @Override
+    public boolean removePatient(Patient patient) {
+        return patients.remove(patient);
+    }
+
+    @Override
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    @Override
+    public List<Patient.Prescription> getAllPrescriptions() {
+        List<Patient.Prescription> allPrescriptions = new ArrayList<>();
+        for (Patient patient : patients) {
+            allPrescriptions.addAll(patient.getPrescriptions());
+        }
+        return allPrescriptions;
+    }
+
+    @Override
+    public List<Drug> getAllDrugs() {
+        return drugs;
+    }
+
+    @Override
+    public boolean addDrug(Drug drug) {
+        return drugs.add(drug);
+    }
+
+    @Override
+    public boolean removeDrug(Drug drug) {
+        return drugs.remove(drug);
+    }
+
+    public Drug getDrugByName(String name) {
+        for (Drug drug : drugs) {
+            if (drug.getName().equals(name)) {
+                return drug;
+            }
+        }
+        return null;
+    }
+
+    public Drug getDrugByUid(UUID uid) {
+        for (Drug drug : drugs) {
+            if (drug.getUid().equals(uid)) {
+                return drug;
+            }
+        }
+        return null;
+    }
+}
+
+
+interface DoctorManagement {
+    boolean addDoctor(Doctor doctor);
+
+    boolean removeDoctor(Doctor doctor);
+
+    List<Doctor> getDoctors();
+}
+
+
+interface PatientManagement {
+    boolean addPatient(Patient patient);
+
+    boolean removePatient(Patient patient);
+
+    List<Patient> getPatients();
+}
+
+
+interface PrescriptionManagement {
+    List<Patient.Prescription> getAllPrescriptions();
+}
+
+
+interface DrugManagement {
+    List<Drug> getAllDrugs();
+
+    boolean addDrug(Drug drug);
+
+    boolean removeDrug(Drug drug);
+}
+
+
+
+
+public class Clinic {
+    public static void main(String[] args) {
+        // Create a manager for the clinic
+        Manager manager = new Manager("ABC Clinic");
+
+        // Create some doctors and nurses
+        Doctor doctor1 = new Doctor(1, "John Doe", "Cardiology");
+        Doctor doctor2 = new Doctor(2, "Jane Smith", "Pediatrics");
+        Nurse nurse1 = new Nurse(1, "Mary Johnson");
+        Nurse nurse2 = new Nurse(2, "Bob Lee");
+
+        // Add doctors and nurses to the manager's lists
+        manager.addDoctor(doctor1);
+        manager.addDoctor(doctor2);
+        manager.addNurse(nurse1);
+        manager.addNurse(nurse2);
+
+        // Create some patients
+        Patient patient1 = new Patient(1, "Sara Lee", "Hypertension");
+        Patient patient2 = new Patient(2, "David Kim", "Diabetes");
+        Patient patient3 = new Patient(3, "Karen Lee", "Asthma");
+
+        // Add patients to the manager's list of patients
+        manager.addPatient(patient1);
+        manager.addPatient(patient2);
+        manager.addPatient(patient3);
+
+        // Assign patients to doctors and nurses
+        doctor1.addPatient(patient1);
+        doctor2.addPatient(patient2);
+        nurse1.addPatient(patient3);
+
+        // Write some prescriptions for patients
+        doctor1.writePrescription(patient1, "Lisinopril");
+        doctor2.writePrescription(patient2, "Metformin");
+        nurse1.getPatientPrescriptions(patient3); // nurse cannot write prescription
+
+        // Print out the prescriptions for each patient
+        System.out.println("Prescriptions for " + patient1.getName() + ":");
+        for (Patient.Prescription p : patient1.getPrescriptions()) {
+            System.out.println(p.getMedication() + " prescribed by " + p.getDoctor().getName() + " on " + p.getDate());
+        }
+
+        System.out.println("Prescriptions for " + patient2.getName() + ":");
+        for (Patient.Prescription p : patient2.getPrescriptions()) {
+            System.out.println(p.getMedication() + " prescribed by " + p.getDoctor().getName() + " on " + p.getDate());
+        }
+
+        System.out.println("Prescriptions for " + patient3.getName() + ":");
+        for (Patient.Prescription p : patient3.getPrescriptions()) {
+            System.out.println(p.getMedication() + " prescribed by " + p.getDoctor().getName() + " on " + p.getDate());
+        }
+
+        // Remove a patient
+        manager.removePatient(patient1);
+    }
+}
