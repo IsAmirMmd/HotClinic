@@ -4,9 +4,10 @@ import javax.print.Doc;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+
 public class BaseMenu {
-    public static Scanner scanner = new Scanner(System.in);
     public static int num;
+    public static Scanner scanner = new Scanner(System.in);
     public static ArrayList<Patient> patients = new ArrayList<>();
     public static ArrayList<Doctor> doctors = new ArrayList<>();
     public static ArrayList<Nurse> nurses = new ArrayList<>();
@@ -265,9 +266,99 @@ public class BaseMenu {
 
 
     public static void managePatient() {
+        clearConsole();
+        System.out.println("**** patients menu ****");
+        System.out.println("1. Add Patients");
+        System.out.println("2. Remove Patient");
+        System.out.println("3. Show All Patients");
+        System.out.println("0. Back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 1:
+                addNurse();
+                break;
 
+            case 2:
+                removeNurse();
+                break;
+
+            case 3:
+                showAllNurse();
+                break;
+
+            case 0:
+                managerPanel(manager);
+                break;
+        }
     }
 
+    public static void addPatients() {
+        clearConsole();
+        Scanner add = new Scanner(System.in);
+        System.out.println("Enter patient name: ");
+        String name = add.nextLine();
+
+        System.out.println("Enter patient address: ");
+        String address = add.nextLine();
+
+        System.out.println("Enter patient phone: ");
+        String phone = add.nextLine();
+
+        Patient patient = new Patient(name, address, phone, null);
+        patients.add(patient);
+        manager.addPatient(patient);
+
+        System.out.println("new patient with name " + name + " added!");
+        sleepTime(2500);
+        managePatient();
+    }
+
+    public static void removePatients() {
+        clearConsole();
+        Scanner remove = new Scanner(System.in);
+        System.out.print("Enter patient name: ");
+        String name = remove.nextLine();
+
+        Patient patientToRemove = null;
+        for (Patient patient : patients) {
+            if (patient.getName().equals(name)) {
+                patientToRemove = patient;
+                break;
+            }
+        }
+
+        if (patientToRemove == null) {
+            System.out.println("Patient not found.");
+        }
+        patients.remove(patientToRemove);
+        manager.removePatient(patientToRemove);
+
+        System.out.println("the patient with name " + name + " removed!");
+        sleepTime(2000);
+        managePatient();
+    }
+
+
+    public static void showAllPatients() {
+        clearConsole();
+        System.out.println("showing all patients...");
+        for (Patient patient : patients) {
+            System.out.println("ID         :  " + patient.getId());
+            System.out.println("name       :  " + patient.getName());
+            System.out.println("address    :  " + patient.getAddress());
+            System.out.println("phone      :  " + patient.getPhone());
+            System.out.println("illness    :  " + patient.getIllness());
+            System.out.println("     *******************     ");
+        }
+        System.out.println("");
+        System.out.println("0. back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 0:
+                managePatient();
+                break;
+        }
+    }
 
 
     public static void manageDrugs() {
@@ -275,6 +366,7 @@ public class BaseMenu {
 
     public static void patientPanel() {
     }
+
     public static void sleepTime(int time) {
         try {
             Thread.sleep(time);
