@@ -11,15 +11,16 @@ public class Manager extends Person
     public ArrayList<Nurse> nurses;
     public ArrayList<Drug> drugs;
 
-    public Manager(String name, String address, String phone, String clinicName) {
+    public Manager(String name, String address, String phone, String clinicName, ArrayList<Patient> patients, ArrayList<Doctor> doctors, ArrayList<Nurse> nurses, ArrayList<Drug> drugs) {
         super(name, address, phone);
         this.clinicName = clinicName;
-        this.patients = new ArrayList<>();
-        this.doctors = new ArrayList<>();
-        this.nurses = new ArrayList<>();
-        this.drugs = new ArrayList<>();
+        this.patients = patients;
+        this.doctors = doctors;
+        this.nurses = nurses;
+        this.drugs = drugs;
     }
 
+   
     public String getClinicName() {
         return clinicName;
     }
