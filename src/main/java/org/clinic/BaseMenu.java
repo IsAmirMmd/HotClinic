@@ -1,6 +1,7 @@
 package org.clinic;
 
 import javax.print.Doc;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -454,6 +455,183 @@ public class BaseMenu {
     }
 
     public static void patientPanel() {
+        clearConsole();
+        System.out.println("**** welcome dear ****");
+        System.out.println("select action from menu :");
+        System.out.println("1. submit your details");
+        System.out.println("2. Login to Your account");
+        num = scanner.nextInt();
+        switch (num) {
+            case 1:
+                submitPatient();
+                break;
+            case 2:
+                patientLogin();
+                break;
+        }
+    }
+
+    public static void submitPatient() {
+        clearConsole();
+        boolean IsValid = true;
+        Scanner add = new Scanner(System.in);
+        System.out.println("Enter your userName: ");
+        String name = add.nextLine();
+
+        System.out.println("Enter your address: ");
+        String address = add.nextLine();
+
+        System.out.println("Enter your phone: ");
+        String phone = add.nextLine();
+        for (Patient patient : patients) {
+            if (name.equals(patient.getName())) {
+                System.out.println("please select another name!");
+                IsValid = false;
+            }
+        }
+        if (IsValid) {
+            Patient patient = new Patient(name, address, phone, null);
+            patients.add(patient);
+        } else {
+            submitPatient();
+        }
+
+    }
+
+    public static void patientLogin() {
+        clearConsole();
+        boolean IsValid = false;
+        Patient tempPatient = null;
+        System.out.println("Enter Your Name :");
+        Scanner login = new Scanner(System.in);
+        for (Patient patient : patients) {
+            if (login.nextLine().equals(patient.getName())) {
+                tempPatient = patient;
+                IsValid = true;
+            }
+        }
+        if (IsValid) {
+            patientCenter(tempPatient);
+        } else {
+            System.out.println("please enter name correctly!");
+            sleepTime(1000);
+            patientLogin();
+        }
+    }
+
+    public static void patientCenter(Patient patient) {
+        System.out.println("**** welcome dear " + patient.getName() + " *****");
+        System.out.println("select action from menu :");
+        System.out.println("1. need examine");
+        System.out.println("2. check prescriptions");
+        System.out.println("3. check medications");
+        num = scanner.nextInt();
+        switch (num) {
+            case 1:
+                examine(patient);
+                break;
+
+            case 2:
+                prescriptions(patient);
+                break;
+
+            case 3:
+                medication(patient);
+                break;
+        }
+    }
+
+    public static void examine(Patient patient) {
+        clearConsole();
+        System.out.println("select the doctor you need:");
+        for (Doctor doctor : doctors) {
+            System.out.println("ID         : " + doctor.getId());
+            System.out.println("name       : " + doctor.getName());
+            System.out.println("speciality : " + doctor.getSpecialty());
+            System.out.println("   ****************     ");
+        }
+        System.out.println("0. back");
+        num = scanner.nextInt();
+        for (Doctor doctor : doctors) {
+            if (num == doctor.getId()) {
+                doctor.addPatient(patient);
+                examineFromDoctor(patient, doctor);
+            }
+        }
+        if (num == 0) {
+            patientCenter(patient);
+        }
+    }
+
+    public static void examineFromDoctor(Patient patient, Doctor doctor) {
+        System.out.println("mr/ms " + patient.getName() + "you are talking to " + doctor.getName());
+//        nurse selector
+        int NursesSize = nurses.size();
+        int NursesNum = new Random().nextInt(NursesSize) + 1;
+        int counter = 0;
+        Nurse selectedNurse = null;
+        for (Nurse nurse : nurses) {
+            counter++;
+            if (counter == NursesNum) {
+                selectedNurse = nurse;
+                break;
+            }
+        }
+//        end nusre selecting
+        System.out.println("we select " + selectedNurse.getName() + " for you");
+        selectedNurse.addPatient(patient);
+        System.out.println("Dr." + doctor.getName() + " select this drug for you :");
+//        selecting drug
+        int DrugSize = drugs.size();
+        int DrugNum = new Random().nextInt(DrugSize) + 1;
+        int Dcounter = 0;
+        Drug selectedDrug = null;
+        for (Drug drug : drugs) {
+            Dcounter++;
+            if (Dcounter == DrugNum) {
+                selectedDrug = drug;
+                break;
+            }
+        }
+        System.out.println(selectedDrug.getName());
+//        end of selecting drug
+        System.out.println("wait until we are checking availability in drugStore ...");
+        if (selectedDrug.isAvailable()) {
+            System.out.println("well!\nwe have this drug");
+            doctor.writePrescription(patient, selectedDrug);
+        } else {
+            System.out.println("oops,we don't have this drug");
+        }
+    }
+
+    public static void prescriptions(Patient patient) {
+        System.out.println("well you want to check your prescriptions...");
+        System.out.println("here is all of your prescriptions :");
+        int i = 1;
+        for (Patient.Prescription prescription : patient.getPrescriptions()) {
+            System.out.println("number " + i + " :");
+            System.out.println("You were examined in   : " + prescription.getDate());
+            System.out.println("You were examined by   : " + prescription.getDoctor().getName());
+            System.out.println("Dr wrote you this drug : " + prescription.getMedication());
+            System.out.println("  *************     ");
+        }
+    }
+
+    public static void medication(Patient patient) {
+        clearConsole();
+        System.out.println("showing all drugs you consumed...");
+        for (String drug : patient.getMedications()) {
+            System.out.println("name    :  " + drug);
+            System.out.println("     *******************     ");
+        }
+        System.out.println("");
+        System.out.println("0. back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 0:
+                patientCenter(patient);
+                break;
+        }
     }
 
     public static void sleepTime(int time) {
