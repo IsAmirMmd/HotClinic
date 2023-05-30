@@ -362,7 +362,95 @@ public class BaseMenu {
 
 
     public static void manageDrugs() {
-        
+        clearConsole();
+        System.out.println("**** DrugStore menu ****");
+        System.out.println("1. Add Drugs");
+        System.out.println("2. Remove Drugs");
+        System.out.println("3. Show All Drugs");
+        System.out.println("0. Back");
+        num = scanner.nextInt();
+
+        switch (num) {
+            case 1:
+                addDrug();
+                break;
+
+            case 2:
+                removeDrug();
+                break;
+
+            case 3:
+                showAllDrugs();
+                break;
+
+            case 0:
+                managerPanel(manager);
+                break;
+        }
+    }
+
+    public static void addDrug() {
+        clearConsole();
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the name of the drug: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter the quantity of the drug: ");
+        int quantity = scanner.nextInt();
+
+        Drug drug = new Drug(name, quantity);
+
+        drugs.add(drug);
+        manager.addDrug(drug);
+
+        System.out.println("new drug with name " + name + " added!");
+        sleepTime(2500);
+        manageDrugs();
+    }
+
+    public static void removeDrug() {
+        clearConsole();
+        Scanner remove = new Scanner(System.in);
+        System.out.print("Enter drug name: ");
+        String name = remove.nextLine();
+
+        Drug drugToRemove = null;
+        for (Drug drug : drugs) {
+            if (drug.getName().equals(name)) {
+                drugToRemove = drug;
+                break;
+            }
+        }
+
+        if (drugToRemove == null) {
+            System.out.println("Drug not found.");
+        }
+        drugs.remove(drugToRemove);
+        manager.removeDrug(drugToRemove);
+
+        System.out.println("the drug with name " + name + " removed!");
+        sleepTime(2000);
+        manageDrugs();
+    }
+
+    public static void showAllDrugs() {
+        clearConsole();
+        System.out.println("showing all drugs...");
+        for (Drug drug : drugs) {
+            System.out.println("ID         :  " + drug.getUid());
+            System.out.println("name       :  " + drug.getName());
+            System.out.println("quantity    :  " + drug.getQuantity());
+            System.out.println("availability      :  " + drug.isAvailable());
+            System.out.println("     *******************     ");
+        }
+        System.out.println("");
+        System.out.println("0. back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 0:
+                manageDrugs();
+                break;
+        }
     }
 
     public static void patientPanel() {
