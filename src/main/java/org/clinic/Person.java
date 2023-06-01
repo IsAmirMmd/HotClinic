@@ -1,22 +1,27 @@
 package org.clinic;
 
+import java.security.spec.ECField;
+import java.sql.SQLException;
+import java.util.Random;
+
+
 public class Person {
-    private static long counter = 0;
-    private long id = 0;
+    public Random random = new Random();
+    private long id;
     private String name;
     private String address;
     private String phone;
     private long salary;
 
     public Person(String name, String address, String phone) {
-        this.id = ++counter;
+        this.id = random.nextInt(900000) + 100000;
         this.name = name;
         this.address = address;
         this.phone = phone;
     }
 
     public Person(String name, String address, String phone, long salary) {
-        this.id = ++counter;
+        this.id = random.nextInt(900000) + 100000;
         this.name = name;
         this.address = address;
         this.phone = phone;

@@ -166,12 +166,11 @@ public class BaseMenu {
 
         if (doctorToRemove == null) {
             System.out.println("Doctor not found.");
-        }
-        else{
+        } else {
 
-        manager.removeDoctor(doctorToRemove);
+            manager.removeDoctor(doctorToRemove);
 
-        System.out.println("the doctor with name " + name + " removed!");
+            System.out.println("the doctor with name " + name + " removed!");
         }
         sleepTime(2000);
         manageDoctor();
@@ -359,8 +358,7 @@ public class BaseMenu {
 
         if (patientToRemove == null) {
             System.out.println("Patient not found.");
-        }
-        else{
+        } else {
             manager.removePatient(patientToRemove);
             System.out.println("the patient with name " + name + " removed!");
         }
@@ -621,6 +619,7 @@ public class BaseMenu {
         if (IsValid) {
             Patient patient = new Patient(name, address, phone, null);
             manager.addPatient(patient);
+            patientLogin();
         } else {
             submitPatient(manager);
         }
@@ -633,8 +632,9 @@ public class BaseMenu {
         Patient tempPatient = null;
         System.out.println("Enter Your Name :");
         Scanner login = new Scanner(System.in);
+        String name = login.nextLine();
         for (Patient patient : patients) {
-            if (login.nextLine().equals(patient.getName())) {
+            if (name.equals(patient.getName())) {
                 tempPatient = patient;
                 IsValid = true;
             }
@@ -649,6 +649,8 @@ public class BaseMenu {
     }
 
     public static void patientCenter(Patient patient) throws SQLException, ClassNotFoundException {
+        clearConsole();
+
         System.out.println("**** welcome dear " + patient.getName() + " *****");
         System.out.println("select action from menu :");
         System.out.println("1. need examine");
@@ -708,7 +710,7 @@ public class BaseMenu {
             }
         }
 //        end nusre selecting
-        System.out.println("we select " + selectedNurse.getName() + " for you");
+        System.out.println("we select " + selectedNurse.getName() + " for you as nurse!");
         selectedNurse.addPatient(patient);
         System.out.println("Dr." + doctor.getName() + " select these drugs for you :");
 //        selecting drug
@@ -741,14 +743,16 @@ public class BaseMenu {
         boolean drugBalance = true;
         for (Drug drug : drugArrayList) {
             if (drug.isAvailable()) {
-                System.out.println("well!\nwe have this " + drug.getName());
+                System.out.println("well! we have this " + drug.getName());
             } else {
                 System.out.println("oops,we don't have this " + drug.getName());
-                drugBalance = false;
             }
         }
         if (drugBalance) {
             doctor.writePrescription(patient, drugArrayList);
+            System.out.println("please wait\nwe are redirecting you to main menu!");
+            sleepTime(1500);
+            patientCenter(patient);
         }
 
     }
@@ -759,7 +763,7 @@ public class BaseMenu {
         int i = 1;
         int j = 1;
         for (Patient.Prescription prescription : patient.getPrescriptions()) {
-            System.out.println("number " + i + " :");
+            System.out.println("number " + (i < 10 ? "0" + i : i) + " :");
             System.out.println("You were examined in   : " + prescription.getDate());
             System.out.println("You were examined by   : " + prescription.getDoctor().getName());
             System.out.println("Dr wrote you this drug : ");
@@ -768,7 +772,15 @@ public class BaseMenu {
                 System.out.println(j + ". " + drug.getName());
                 j++;
             }
-            System.out.println("  *************     ");
+            System.out.println("    *************     ");
+        }
+        System.out.println("Result Finished ...\n");
+        System.out.println("0. back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 0:
+                patientCenter(patient);
+                break;
         }
     }
 
