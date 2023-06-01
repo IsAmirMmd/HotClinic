@@ -12,9 +12,7 @@ import java.util.ArrayList;
 public class BaseMenu {
     public static int num;
     public static Scanner scanner = new Scanner(System.in);
-    public static ArrayList<Drug> drugs = Drug.firstLoad();
-
-
+    public static ArrayList<Drug> drugs;
     public static ArrayList<Doctor> doctors;
     public static ArrayList<Nurse> nurses;
     public static ArrayList<Patient> patients;
@@ -27,6 +25,8 @@ public class BaseMenu {
             nurses = File.LoadNurse();
             patients = File.LoadPatient();
             personnels = File.LoadPersonnel();
+            drugs = File.LoadFromDrug();
+
             manager = new Manager("amirMmd", null, null, "N.I.T", patients, doctors, nurses, drugs, personnels);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -530,7 +530,6 @@ public class BaseMenu {
 
         Drug drug = new Drug(name, quantity);
 
-        drugs.add(drug);
         manager.addDrug(drug);
 
         System.out.println("new drug with name " + name + " added!");
@@ -555,7 +554,6 @@ public class BaseMenu {
         if (drugToRemove == null) {
             System.out.println("Drug not found.");
         }
-        drugs.remove(drugToRemove);
         manager.removeDrug(drugToRemove);
 
         System.out.println("the drug with name " + name + " removed!");
@@ -769,6 +767,7 @@ public class BaseMenu {
         System.out.println("here is all of your prescriptions :");
         int i = 1;
         String docName = "";
+        String illness = "";
         for (Patient.Prescription prescription : File.LoadPrescription()) {
             if (prescription.getPatientId() == patient.getId()) {
                 System.out.println("number " + (i < 10 ? "0" + i : i) + " :");
@@ -776,8 +775,10 @@ public class BaseMenu {
                 for (Doctor doc : doctors) {
                     if (doc.getId() == prescription.getDoctor()) {
                         docName = doc.getName();
+                        illness = doc.getSpecialty();
                     }
                 }
+                System.out.println("You were here for      : " + illness);
                 System.out.println("You were examined by   : " + docName);
                 System.out.println("Dr wrote you this drug : ");
                 System.out.print("   ");

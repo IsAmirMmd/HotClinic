@@ -52,10 +52,10 @@ public class Doctor extends Person {
                         drug2 = drug.getName();
                     }
                     drug.setQuantity(drug.getQuantity() - 1);
+                    File.updateDrug(drug);
                 }
                 i++;
             }
-            System.out.println("test");
             Patient.Prescription prescription = new Patient.Prescription(new java.util.Date(), drug1, drug2, this.getId(), patient.getId());
             File.writePrescription(patient, prescription);
             for (Drug drug : medication) {

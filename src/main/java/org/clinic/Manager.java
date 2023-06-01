@@ -82,12 +82,14 @@ public class Manager extends Person
     }
 
     @Override
-    public boolean addDrug(Drug drug) {
+    public boolean addDrug(Drug drug) throws SQLException, ClassNotFoundException {
+        File.saveToDrug(drug);
         return drugs.add(drug);
     }
 
     @Override
-    public boolean removeDrug(Drug drug) {
+    public boolean removeDrug(Drug drug) throws SQLException {
+        File.removeDrug(drug);
         return drugs.remove(drug);
     }
 
@@ -100,9 +102,9 @@ public class Manager extends Person
         return null;
     }
 
-    public Drug getDrugByUid(UUID uid) {
+    public Drug getDrugByUid(long uid) {
         for (Drug drug : drugs) {
-            if (drug.getUid().equals(uid)) {
+            if (drug.getUid() == uid) {
                 return drug;
             }
         }

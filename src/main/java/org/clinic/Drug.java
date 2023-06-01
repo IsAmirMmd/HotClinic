@@ -1,23 +1,31 @@
 package org.clinic;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.Random;
 
 public class Drug {
-    private UUID uid;
+    private Random random = new Random();
+    private long uid;
+
     private String name;
     private int quantity;
     private boolean available;
 
     public Drug(String name, int quantity) {
-        this.uid = UUID.randomUUID();
+        this.uid = random.nextInt(900000) + 100000;
         this.name = name;
         this.quantity = quantity;
         this.available = quantity > 0;
     }
 
-    public UUID getUid() {
+    public long getUid() {
         return uid;
+    }
+
+    public void setUid(long uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -37,21 +45,9 @@ public class Drug {
         this.available = quantity > 0;
     }
 
-    public static ArrayList<Drug> firstLoad() {
-        ArrayList<Drug> drugs = new ArrayList<>();
-
-        drugs.add(new Drug("Ibuprofen", 10));
-        drugs.add(new Drug("Acetaminophen", 7));
-        drugs.add(new Drug("Aspirin", 8));
-        drugs.add(new Drug("Lisinopril", 6));
-        drugs.add(new Drug("Atorvastatin", 9));
-        drugs.add(new Drug("Metformin", 11));
-        drugs.add(new Drug("Albuterol", 12));
-        drugs.add(new Drug("Furosemide", 13));
-        drugs.add(new Drug("Omeprazole", 15));
-        drugs.add(new Drug("Losartan", 14));
-
-        return drugs;
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
+
 
 }

@@ -315,4 +315,71 @@ public class File {
         statement.close();
         connection.close();
     }
+
+    public static void saveToDrug(Drug drug) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+        String sql = "INSERT INTO `drug`(`id`, `name`, `quantity`, `available`) VALUES (?,?,?,?)";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setLong(1, drug.getUid());
+        stmt.setString(2, drug.getName());
+        stmt.setInt(3, drug.getQuantity());
+        stmt.setBoolean(4, drug.isAvailable());
+        stmt.executeUpdate();
+        stmt.close();
+        connection.close();
+
+
+    }
+
+    public static ArrayList<Drug> LoadFromDrug() throws SQLException, ClassNotFoundException {
+        ArrayList<Drug> drugs = new ArrayList<>();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+        String query = "SELECT * FROM drug";
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            long id = rs.getInt(1);
+            String name = rs.getString(2);
+            int quantity = rs.getInt(3);
+            boolean available = rs.getBoolean(4);
+            Drug drug = new Drug(name, quantity);
+            drug.setAvailable(available);
+            drug.setUid(id);
+            drugs.add(drug);
+        }
+        rs.close();
+        pstmt.close();
+        connection.close();
+        return drugs;
+    }
+
+    public static void updateDrug(Drug drug) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+        String sql = "UPDATE drug SET quantity=? WHERE id=?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, drug.getQuantity());
+        statement.setLong(2, drug.getUid());
+
+        statement.executeUpdate();
+
+        statement.close();
+        connection.close();
+    }
+
+    public static void removeDrug(Drug drug) throws SQLException {
+        conn = DriverManager.getConnection(url, username, password);
+        String deleteSql = "DELETE FROM `drug` WHERE id = ?";
+        PreparedStatement pstmt = null;
+        pstmt = conn.prepareStatement(deleteSql);
+        pstmt.setLong(1, drug.getUid());
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
+
 }
