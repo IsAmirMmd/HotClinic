@@ -1,5 +1,6 @@
 package org.clinic;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -38,7 +39,8 @@ public class Manager extends Person
     }
 
     @Override
-    public boolean removeDoctor(Doctor doctor) {
+    public boolean removeDoctor(Doctor doctor) throws SQLException, ClassNotFoundException {
+        File.removeFrom(doctor);
         return doctors.remove(doctor);
     }
 
@@ -55,7 +57,8 @@ public class Manager extends Person
     }
 
     @Override
-    public boolean removePatient(Patient patient) {
+    public boolean removePatient(Patient patient) throws SQLException, ClassNotFoundException {
+        File.removeFrom(patient);
         return patients.remove(patient);
     }
 
@@ -111,7 +114,8 @@ public class Manager extends Person
         nurses.add(nurse);
     }
 
-    public void removeNurse(Nurse nurse) {
+    public void removeNurse(Nurse nurse) throws SQLException, ClassNotFoundException {
+        File.removeFrom(nurse);
         nurses.remove(nurse);
     }
 
@@ -121,7 +125,8 @@ public class Manager extends Person
         personnels.add(personnel);
     }
 
-    public void removePersonnel(Personnel personnelToRemove) {
+    public void removePersonnel(Personnel personnelToRemove) throws SQLException, ClassNotFoundException {
+        File.removeFrom(personnelToRemove);
         personnels.remove(personnelToRemove);
     }
 }

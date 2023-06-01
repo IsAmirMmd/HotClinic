@@ -1,6 +1,7 @@
 package org.clinic;
 
 import javax.print.Doc;
+import java.awt.font.NumericShaper;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -162,6 +163,44 @@ public class File {
         return personnels;
     }
 
+    public static void removeFrom(Person person) throws SQLException, ClassNotFoundException {
+        conn = DriverManager.getConnection(url, username, password);
+        if (person instanceof Nurse) {
+            String deleteSql = "DELETE FROM `nurse` WHERE id = ?";
+            PreparedStatement pstmt = null;
+            pstmt = conn.prepareStatement(deleteSql);
+            pstmt.setLong(1, person.getId());
+            pstmt.executeUpdate();
+            pstmt.close();
+        } else if (person instanceof Personnel) {
 
+            String deleteSql = "DELETE FROM `personnel` WHERE id = ?";
+            PreparedStatement pstmt = null;
+            pstmt = conn.prepareStatement(deleteSql);
+            pstmt.setLong(1, person.getId());
+            pstmt.executeUpdate();
+            pstmt.close();
+
+        } else if (person instanceof Doctor) {
+
+            String deleteSql = "DELETE FROM `doctor` WHERE id = ?";
+            PreparedStatement pstmt = null;
+            pstmt = conn.prepareStatement(deleteSql);
+            pstmt.setLong(1, person.getId());
+            pstmt.executeUpdate();
+            pstmt.close();
+
+        } else if (person instanceof Patient) {
+
+            String deleteSql = "DELETE FROM `patient` WHERE id = ?";
+            PreparedStatement pstmt = null;
+            pstmt = conn.prepareStatement(deleteSql);
+            pstmt.setLong(1, person.getId());
+            pstmt.executeUpdate();
+            pstmt.close();
+
+        }
+        conn.close();
+    }
 
 }

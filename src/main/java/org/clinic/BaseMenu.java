@@ -167,9 +167,12 @@ public class BaseMenu {
         if (doctorToRemove == null) {
             System.out.println("Doctor not found.");
         }
+        else{
+
         manager.removeDoctor(doctorToRemove);
 
         System.out.println("the doctor with name " + name + " removed!");
+        }
         sleepTime(2000);
         manageDoctor();
     }
@@ -357,9 +360,10 @@ public class BaseMenu {
         if (patientToRemove == null) {
             System.out.println("Patient not found.");
         }
-        manager.removePatient(patientToRemove);
-
-        System.out.println("the patient with name " + name + " removed!");
+        else{
+            manager.removePatient(patientToRemove);
+            System.out.println("the patient with name " + name + " removed!");
+        }
         sleepTime(2000);
         managePatient();
     }
@@ -457,12 +461,10 @@ public class BaseMenu {
 
         if (personnelToRemove == null) {
             System.out.println("personnel not found.");
+        } else {
+            manager.removePersonnel(personnelToRemove);
+            System.out.println("the personnel with name " + name + " removed!");
         }
-
-        manager.removePersonnel(personnelToRemove);
-
-
-        System.out.println("the personnel with name " + name + " removed!");
         sleepTime(2000);
         managePersonnel();
     }
