@@ -1,6 +1,7 @@
 package org.clinic;
 
 import javax.print.Doc;
+import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -9,15 +10,31 @@ import java.util.ArrayList;
 public class BaseMenu {
     public static int num;
     public static Scanner scanner = new Scanner(System.in);
-    public static ArrayList<Patient> patients = Patient.firstLoad();
-    public static ArrayList<Doctor> doctors = Doctor.firstLoad();
-    public static ArrayList<Nurse> nurses = Nurse.firstLoad();
     public static ArrayList<Drug> drugs = Drug.firstLoad();
-    public static ArrayList<Personnel> personnels = Personnel.firstLoad();
-    public static Manager manager = new Manager("amirMmd", null, null, "N.I.T", patients, doctors, nurses, drugs, personnels);
 
 
-    public static void baseMenu() {
+    public static ArrayList<Doctor> doctors;
+    public static ArrayList<Nurse> nurses;
+    public static ArrayList<Patient> patients;
+    public static ArrayList<Personnel> personnels;
+    public static Manager manager;
+
+    static {
+        try {
+            doctors = File.LoadDoctor();
+            nurses = File.LoadNurse();
+            patients = File.LoadPatient();
+            personnels = File.LoadPersonnel();
+            manager = new Manager("amirMmd", null, null, "N.I.T", patients, doctors, nurses, drugs, personnels);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static void baseMenu() throws SQLException, ClassNotFoundException {
         System.out.println("1. manager panel");
         System.out.println("2. patient panel");
         num = scanner.nextInt();
@@ -31,7 +48,7 @@ public class BaseMenu {
         }
     }
 
-    public static void managerLogin() {
+    public static void managerLogin() throws SQLException, ClassNotFoundException {
         clearConsole();
         boolean IsAllowed = false;
         Scanner admin = new Scanner(System.in);
@@ -47,7 +64,7 @@ public class BaseMenu {
         }
     }
 
-    public static void managerPanel(Manager manager) {
+    public static void managerPanel(Manager manager) throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** welcome manager ****");
         System.out.println("select action from menu :");
@@ -79,7 +96,7 @@ public class BaseMenu {
         }
     }
 
-    public static void manageDoctor() {
+    public static void manageDoctor() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** Doctor menu ****");
         System.out.println("1. Add Doctor");
@@ -107,7 +124,7 @@ public class BaseMenu {
         }
     }
 
-    public static void addDoctor() {
+    public static void addDoctor() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner add = new Scanner(System.in);
         System.out.println("Enter doctor name: ");
@@ -126,7 +143,6 @@ public class BaseMenu {
         long salary = add.nextLong();
 
         Doctor doctor = new Doctor(name, address, phone, speciality, salary);
-        doctors.add(doctor);
         manager.addDoctor(doctor);
 
         System.out.println("new doctor with name " + name + " added!");
@@ -134,7 +150,7 @@ public class BaseMenu {
         manageDoctor();
     }
 
-    public static void removeDoctor() {
+    public static void removeDoctor() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner remove = new Scanner(System.in);
         System.out.print("Enter doctor name: ");
@@ -151,7 +167,6 @@ public class BaseMenu {
         if (doctorToRemove == null) {
             System.out.println("Doctor not found.");
         }
-        doctors.remove(doctorToRemove);
         manager.removeDoctor(doctorToRemove);
 
         System.out.println("the doctor with name " + name + " removed!");
@@ -159,7 +174,7 @@ public class BaseMenu {
         manageDoctor();
     }
 
-    public static void showAllDoctor() {
+    public static void showAllDoctor() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("showing all doctors...");
         for (Doctor doctor : doctors) {
@@ -180,7 +195,7 @@ public class BaseMenu {
         }
     }
 
-    public static void manageNurses() {
+    public static void manageNurses() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** Nurse menu ****");
         System.out.println("1. Add Nurse");
@@ -208,7 +223,7 @@ public class BaseMenu {
         }
     }
 
-    public static void addNurse() {
+    public static void addNurse() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner add = new Scanner(System.in);
         System.out.println("Enter nurse name: ");
@@ -224,7 +239,6 @@ public class BaseMenu {
         long salary = add.nextLong();
 
         Nurse nurse = new Nurse(name, address, phone, salary);
-        nurses.add(nurse);
         manager.addNurse(nurse);
 
         System.out.println("new nurse with name " + name + " added!");
@@ -232,7 +246,7 @@ public class BaseMenu {
         manageNurses();
     }
 
-    public static void removeNurse() {
+    public static void removeNurse() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner remove = new Scanner(System.in);
         System.out.print("Enter nurse name: ");
@@ -249,8 +263,6 @@ public class BaseMenu {
         if (nurseToRemove == null) {
             System.out.println("Nurse not found.");
         } else {
-
-            nurses.remove(nurseToRemove);
             manager.removeNurse(nurseToRemove);
             System.out.println("the nurse with name " + name + " removed!");
         }
@@ -258,7 +270,7 @@ public class BaseMenu {
         manageNurses();
     }
 
-    public static void showAllNurse() {
+    public static void showAllNurse() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("showing all nurses...");
         for (Nurse nurse : nurses) {
@@ -279,7 +291,7 @@ public class BaseMenu {
     }
 
 
-    public static void managePatient() {
+    public static void managePatient() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** patients menu ****");
         System.out.println("1. Add Patients");
@@ -306,7 +318,7 @@ public class BaseMenu {
         }
     }
 
-    public static void addPatients() {
+    public static void addPatients() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner add = new Scanner(System.in);
         System.out.println("Enter patient name: ");
@@ -319,7 +331,8 @@ public class BaseMenu {
         String phone = add.nextLine();
 
         Patient patient = new Patient(name, address, phone, null);
-        patients.add(patient);
+
+
         manager.addPatient(patient);
 
         System.out.println("new patient with name " + name + " added!");
@@ -327,7 +340,7 @@ public class BaseMenu {
         managePatient();
     }
 
-    public static void removePatients() {
+    public static void removePatients() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner remove = new Scanner(System.in);
         System.out.print("Enter patient name: ");
@@ -344,7 +357,6 @@ public class BaseMenu {
         if (patientToRemove == null) {
             System.out.println("Patient not found.");
         }
-        patients.remove(patientToRemove);
         manager.removePatient(patientToRemove);
 
         System.out.println("the patient with name " + name + " removed!");
@@ -353,7 +365,7 @@ public class BaseMenu {
     }
 
 
-    public static void showAllPatients() {
+    public static void showAllPatients() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("showing all patients...");
         for (Patient patient : patients) {
@@ -374,7 +386,7 @@ public class BaseMenu {
         }
     }
 
-    public static void managePersonnel() {
+    public static void managePersonnel() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** Personnel menu ****");
         System.out.println("1. Add Personnel");
@@ -402,7 +414,7 @@ public class BaseMenu {
         }
     }
 
-    public static void addPersonnel() {
+    public static void addPersonnel() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner add = new Scanner(System.in);
         System.out.println("Enter personnel name: ");
@@ -421,7 +433,7 @@ public class BaseMenu {
         long salary = add.nextLong();
 
         Personnel personnel = new Personnel(name, address, phone, salary, task);
-        personnels.add(personnel);
+
         manager.addPersonnel(personnel);
 
         System.out.println("new personnel with name " + name + " added!");
@@ -429,7 +441,7 @@ public class BaseMenu {
         managePersonnel();
     }
 
-    public static void removePersonnel() {
+    public static void removePersonnel() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner remove = new Scanner(System.in);
         System.out.print("Enter personnel name: ");
@@ -446,15 +458,16 @@ public class BaseMenu {
         if (personnelToRemove == null) {
             System.out.println("personnel not found.");
         }
-        personnels.remove(personnelToRemove);
+
         manager.removePersonnel(personnelToRemove);
+
 
         System.out.println("the personnel with name " + name + " removed!");
         sleepTime(2000);
         managePersonnel();
     }
 
-    public static void showAllPersonnel() {
+    public static void showAllPersonnel() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("showing all personnel...");
         for (Personnel personnel : personnels) {
@@ -476,7 +489,7 @@ public class BaseMenu {
         }
     }
 
-    public static void manageDrugs() {
+    public static void manageDrugs() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** DrugStore menu ****");
         System.out.println("1. Add Drugs");
@@ -504,7 +517,7 @@ public class BaseMenu {
         }
     }
 
-    public static void addDrug() {
+    public static void addDrug() throws SQLException, ClassNotFoundException {
         clearConsole();
 
         Scanner scanner = new Scanner(System.in);
@@ -523,7 +536,7 @@ public class BaseMenu {
         manageDrugs();
     }
 
-    public static void removeDrug() {
+    public static void removeDrug() throws SQLException, ClassNotFoundException {
         clearConsole();
         Scanner remove = new Scanner(System.in);
         System.out.print("Enter drug name: ");
@@ -548,7 +561,7 @@ public class BaseMenu {
         manageDrugs();
     }
 
-    public static void showAllDrugs() {
+    public static void showAllDrugs() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("showing all drugs...");
         for (Drug drug : drugs) {
@@ -568,7 +581,7 @@ public class BaseMenu {
         }
     }
 
-    public static void patientPanel() {
+    public static void patientPanel() throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** welcome dear ****");
         System.out.println("select action from menu :");
@@ -577,7 +590,7 @@ public class BaseMenu {
         num = scanner.nextInt();
         switch (num) {
             case 1:
-                submitPatient();
+                submitPatient(manager);
                 break;
             case 2:
                 patientLogin();
@@ -585,7 +598,7 @@ public class BaseMenu {
         }
     }
 
-    public static void submitPatient() {
+    public static void submitPatient(Manager manager) throws SQLException, ClassNotFoundException {
         clearConsole();
         boolean IsValid = true;
         Scanner add = new Scanner(System.in);
@@ -605,14 +618,14 @@ public class BaseMenu {
         }
         if (IsValid) {
             Patient patient = new Patient(name, address, phone, null);
-            patients.add(patient);
+            manager.addPatient(patient);
         } else {
-            submitPatient();
+            submitPatient(manager);
         }
 
     }
 
-    public static void patientLogin() {
+    public static void patientLogin() throws SQLException, ClassNotFoundException {
         clearConsole();
         boolean IsValid = false;
         Patient tempPatient = null;
@@ -633,7 +646,7 @@ public class BaseMenu {
         }
     }
 
-    public static void patientCenter(Patient patient) {
+    public static void patientCenter(Patient patient) throws SQLException, ClassNotFoundException {
         System.out.println("**** welcome dear " + patient.getName() + " *****");
         System.out.println("select action from menu :");
         System.out.println("1. need examine");
@@ -655,7 +668,7 @@ public class BaseMenu {
         }
     }
 
-    public static void examine(Patient patient) {
+    public static void examine(Patient patient) throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("select the doctor you need:");
         for (Doctor doctor : doctors) {
@@ -677,7 +690,7 @@ public class BaseMenu {
         }
     }
 
-    public static void examineFromDoctor(Patient patient, Doctor doctor) {
+    public static void examineFromDoctor(Patient patient, Doctor doctor) throws SQLException, ClassNotFoundException {
         System.out.println("mr/ms " + patient.getName() + "you are talking to " + doctor.getName());
         patient.setIllness(doctor.getSpecialty());
 //        nurse selector
@@ -738,7 +751,7 @@ public class BaseMenu {
 
     }
 
-    public static void prescriptions(Patient patient) {
+    public static void prescriptions(Patient patient) throws SQLException, ClassNotFoundException {
         System.out.println("well you want to check your prescriptions...");
         System.out.println("here is all of your prescriptions :");
         int i = 1;
@@ -757,7 +770,7 @@ public class BaseMenu {
         }
     }
 
-    public static void medication(Patient patient) {
+    public static void medication(Patient patient) throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("showing all drugs you consumed...");
         for (String drug : patient.getMedications()) {

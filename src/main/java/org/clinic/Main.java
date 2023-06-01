@@ -2,6 +2,10 @@ package org.clinic;
 
 public class Main {
     public static void main(String[] args) {
-        BaseMenu.baseMenu();
+        try {
+            BaseMenu.baseMenu();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }

@@ -33,12 +33,10 @@ public class Nurse extends Person {
 
     public static ArrayList<Nurse> firstLoad() {
         ArrayList<Nurse> nurses = new ArrayList<>();
-
         nurses.add(new Nurse("Maryam Ebrahimi", "Tehran, Valiasr Street", "09123456789", 1200000));
         nurses.add(new Nurse("Ali Mohammadi", "Isfahan, Chaharbagh Street", "09123456789", 1200000));
         nurses.add(new Nurse("Sara Hosseini", "Shiraz, Hafez Street", "09123456789", 1200000));
         nurses.add(new Nurse("Hossein Ahmadi", "Tabriz, Saat Square", "09123456789", 1200000));
-
         return nurses;
     }
 }

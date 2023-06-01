@@ -2,7 +2,7 @@ package org.clinic;
 
 public class Person {
     private static long counter = 0;
-    private long id;
+    private long id = 0;
     private String name;
     private String address;
     private String phone;
@@ -45,6 +45,10 @@ public class Person {
 
     public void setSalary(long salary) {
         this.salary = salary;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override

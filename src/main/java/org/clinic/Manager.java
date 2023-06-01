@@ -33,6 +33,7 @@ public class Manager extends Person
 
     @Override
     public boolean addDoctor(Doctor doctor) {
+        File.saveTo(doctor);
         return doctors.add(doctor);
     }
 
@@ -48,6 +49,8 @@ public class Manager extends Person
 
     @Override
     public boolean addPatient(Patient patient) {
+        File.saveTo(patient);
+
         return patients.add(patient);
     }
 
@@ -104,6 +107,7 @@ public class Manager extends Person
     }
 
     public void addNurse(Nurse nurse) {
+        File.saveTo(nurse);
         nurses.add(nurse);
     }
 
@@ -112,6 +116,8 @@ public class Manager extends Person
     }
 
     public void addPersonnel(Personnel personnel) {
+        File.saveTo(personnel);
+
         personnels.add(personnel);
     }
 

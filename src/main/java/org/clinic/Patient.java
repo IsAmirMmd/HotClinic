@@ -83,6 +83,7 @@ public class Patient extends Person {
         patients.add(new Patient("Sara", "Isfahan, Chaharbagh Street", "09123456789", null));
         patients.add(new Patient("Mohammad", "Shiraz, Hafez Street", "09123456789", null));
         patients.add(new Patient("Maryam", "Tabriz, Saat Square", "09123456789", null));
+
         patients.add(new Patient("Hossein", "Mashhad, Imam Reza Street", "09123456789", null));
         return patients;
     }
