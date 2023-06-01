@@ -2,6 +2,8 @@ package org.clinic;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
+
 
 public class Patient extends Person {
     private String illness;
@@ -41,13 +43,16 @@ public class Patient extends Person {
     }
 
     public static class Prescription {
+        public Random random = new Random();
         private Date date;
+        private long ID;
         private ArrayList<Drug> medication;
         private Doctor doctor;
         private String patientName;
         private long patientId;
 
         public Prescription(Date date, ArrayList<Drug> medication, Doctor doctor, Patient patient) {
+            this.ID = random.nextInt(90000) + 10000;
             this.date = date;
             this.medication = medication;
             this.doctor = doctor;
