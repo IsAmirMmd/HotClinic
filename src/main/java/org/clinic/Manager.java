@@ -10,17 +10,19 @@ public class Manager extends Person
     public ArrayList<Doctor> doctors;
     public ArrayList<Nurse> nurses;
     public ArrayList<Drug> drugs;
+    public ArrayList<Personnel> personnels;
 
-    public Manager(String name, String address, String phone, String clinicName, ArrayList<Patient> patients, ArrayList<Doctor> doctors, ArrayList<Nurse> nurses, ArrayList<Drug> drugs) {
+    public Manager(String name, String address, String phone, String clinicName, ArrayList<Patient> patients, ArrayList<Doctor> doctors, ArrayList<Nurse> nurses, ArrayList<Drug> drugs, ArrayList<Personnel> personnels) {
         super(name, address, phone);
         this.clinicName = clinicName;
         this.patients = patients;
         this.doctors = doctors;
         this.nurses = nurses;
         this.drugs = drugs;
+        this.personnels = personnels;
     }
 
-   
+
     public String getClinicName() {
         return clinicName;
     }
@@ -107,5 +109,13 @@ public class Manager extends Person
 
     public void removeNurse(Nurse nurse) {
         nurses.remove(nurse);
+    }
+
+    public void addPersonnel(Personnel personnel) {
+        personnels.add(personnel);
+    }
+
+    public void removePersonnel(Personnel personnelToRemove) {
+        personnels.remove(personnelToRemove);
     }
 }

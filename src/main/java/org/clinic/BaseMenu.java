@@ -13,7 +13,8 @@ public class BaseMenu {
     public static ArrayList<Doctor> doctors = Doctor.firstLoad();
     public static ArrayList<Nurse> nurses = Nurse.firstLoad();
     public static ArrayList<Drug> drugs = Drug.firstLoad();
-    public static Manager manager = new Manager("amirMmd", null, null, "N.I.T", patients, doctors, nurses, drugs);
+    public static ArrayList<Personnel> personnels = Personnel.firstLoad();
+    public static Manager manager = new Manager("amirMmd", null, null, "N.I.T", patients, doctors, nurses, drugs, personnels);
 
 
     public static void baseMenu() {
@@ -53,7 +54,8 @@ public class BaseMenu {
         System.out.println("1. manage doctors");
         System.out.println("2. manage nurses");
         System.out.println("3. manage patient");
-        System.out.println("4. manage drugs");
+        System.out.println("4. manage personnels");
+        System.out.println("5. manage drugs");
         num = scanner.nextInt();
         switch (num) {
             case 1:
@@ -69,6 +71,9 @@ public class BaseMenu {
                 break;
 
             case 4:
+                managePersonnel();
+                break;
+            case 5:
                 manageDrugs();
                 break;
         }
@@ -117,7 +122,10 @@ public class BaseMenu {
         System.out.println("Enter doctor speciality: ");
         String speciality = add.nextLine();
 
-        Doctor doctor = new Doctor(name, address, phone, speciality);
+        System.out.println("Enter min salary: ");
+        long salary = add.nextLong();
+
+        Doctor doctor = new Doctor(name, address, phone, speciality, salary);
         doctors.add(doctor);
         manager.addDoctor(doctor);
 
@@ -212,7 +220,10 @@ public class BaseMenu {
         System.out.println("Enter nurse phone: ");
         String phone = add.nextLine();
 
-        Nurse nurse = new Nurse(name, address, phone);
+        System.out.println("Enter min salary: ");
+        long salary = add.nextLong();
+
+        Nurse nurse = new Nurse(name, address, phone, salary);
         nurses.add(nurse);
         manager.addNurse(nurse);
 
@@ -363,6 +374,107 @@ public class BaseMenu {
         }
     }
 
+    public static void managePersonnel() {
+        clearConsole();
+        System.out.println("**** Personnel menu ****");
+        System.out.println("1. Add Personnel");
+        System.out.println("2. Remove Personnel");
+        System.out.println("3. Show All Personnels");
+        System.out.println("0. Back");
+        num = scanner.nextInt();
+
+        switch (num) {
+            case 1:
+                addPersonnel();
+                break;
+
+            case 2:
+                removePersonnel();
+                break;
+
+            case 3:
+                showAllPersonnel();
+                break;
+
+            case 0:
+                managerPanel(manager);
+                break;
+        }
+    }
+
+    public static void addPersonnel() {
+        clearConsole();
+        Scanner add = new Scanner(System.in);
+        System.out.println("Enter personnel name: ");
+        String name = add.nextLine();
+
+        System.out.println("Enter personnel address: ");
+        String address = add.nextLine();
+
+        System.out.println("Enter personnel phone: ");
+        String phone = add.nextLine();
+
+        System.out.println("Enter personnel task: ");
+        String task = add.nextLine();
+
+        System.out.println("Enter min salary: ");
+        long salary = add.nextLong();
+
+        Personnel personnel = new Personnel(name, address, phone, salary, task);
+        personnels.add(personnel);
+        manager.addPersonnel(personnel);
+
+        System.out.println("new personnel with name " + name + " added!");
+        sleepTime(2000);
+        managePersonnel();
+    }
+
+    public static void removePersonnel() {
+        clearConsole();
+        Scanner remove = new Scanner(System.in);
+        System.out.print("Enter personnel name: ");
+        String name = remove.nextLine();
+
+        Personnel personnelToRemove = null;
+        for (Personnel personnel : personnels) {
+            if (personnel.getName().equals(name)) {
+                personnelToRemove = personnel;
+                break;
+            }
+        }
+
+        if (personnelToRemove == null) {
+            System.out.println("personnel not found.");
+        }
+        personnels.remove(personnelToRemove);
+        manager.removePersonnel(personnelToRemove);
+
+        System.out.println("the personnel with name " + name + " removed!");
+        sleepTime(2000);
+        managePersonnel();
+    }
+
+    public static void showAllPersonnel() {
+        clearConsole();
+        System.out.println("showing all personnel...");
+        for (Personnel personnel : personnels) {
+            System.out.println("ID         :  " + personnel.getId());
+            System.out.println("name       :  " + personnel.getName());
+            System.out.println("address    :  " + personnel.getAddress());
+            System.out.println("phone      :  " + personnel.getPhone());
+            System.out.println("task       :  " + personnel.getTask());
+            System.out.println("salary     :  " + personnel.getSalary());
+            System.out.println("     *******************     ");
+        }
+        System.out.println("");
+        System.out.println("0. back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 0:
+                managePersonnel();
+                break;
+        }
+    }
 
     public static void manageDrugs() {
         clearConsole();
