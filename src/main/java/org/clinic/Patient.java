@@ -1,5 +1,6 @@
 package org.clinic;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
@@ -21,12 +22,14 @@ public class Patient extends Person {
         return illness;
     }
 
-    public ArrayList<String> getMedications() {
-        return medications;
+    public ArrayList<String> getMedications() throws SQLException, ClassNotFoundException {
+        return File.LoadDrug(this);
     }
 
-    public void addMedication(String medication) {
+    public void addMedication(String medication) throws SQLException, ClassNotFoundException {
+        medications = File.LoadDrug(this);
         medications.add(medication);
+        File.saveDrug(this,medications);
     }
 
 
@@ -47,37 +50,44 @@ public class Patient extends Person {
         private Date date;
         private long ID;
         private ArrayList<Drug> medication;
-        private Doctor doctor;
-        private String patientName;
+        private long doctor;
         private long patientId;
 
-        public Prescription(Date date, ArrayList<Drug> medication, Doctor doctor, Patient patient) {
+        public String drug1;
+        public String drug2;
+
+        public Prescription(Date date, String drug1, String drug2, long doctor, long patient) {
             this.ID = random.nextInt(90000) + 10000;
             this.date = date;
-            this.medication = medication;
+            this.drug1 = drug1;
+            this.drug2 = drug2;
             this.doctor = doctor;
-            this.patientName = patient.getName();
-            this.patientId = patient.getId();
+            this.patientId = patient;
         }
 
-        public Date getDate() {
-            return date;
+        public String getDate() {
+            return date.toString();
         }
 
         public ArrayList<Drug> getMedication() {
             return medication;
         }
 
-        public Doctor getDoctor() {
+        public long getDoctor() {
             return doctor;
         }
 
-        public String getPatientName() {
-            return patientName;
-        }
 
         public long getPatientId() {
             return patientId;
+        }
+
+        public long getID() {
+            return ID;
+        }
+
+        public void setID(long ID) {
+            this.ID = ID;
         }
     }
 

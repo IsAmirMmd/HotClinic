@@ -1,6 +1,7 @@
 package org.clinic;
 
 import javax.print.Doc;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Doctor extends Person {
@@ -36,16 +37,27 @@ public class Doctor extends Person {
         return null;
     }
 
-    public Patient.Prescription writePrescription(Patient patient, ArrayList<Drug> medication) {
+    public Patient.Prescription writePrescription(Patient patient, ArrayList<Drug> medication) throws SQLException, ClassNotFoundException {
+        String drug1 = "null";
+        String drug2 = "null";
+        int i = 0;
         if (patients.contains(patient)) {
             for (Drug drug : medication) {
                 if (drug.getQuantity() == 0) {
                     medication.remove(drug);
                 } else {
+                    if (i == 0) {
+                        drug1 = drug.getName();
+                    } else {
+                        drug2 = drug.getName();
+                    }
                     drug.setQuantity(drug.getQuantity() - 1);
                 }
+                i++;
             }
-            Patient.Prescription prescription = new Patient.Prescription(new java.util.Date(), medication, this, patient);
+            System.out.println("test");
+            Patient.Prescription prescription = new Patient.Prescription(new java.util.Date(), drug1, drug2, this.getId(), patient.getId());
+            File.writePrescription(patient, prescription);
             for (Drug drug : medication) {
                 patient.addMedication(drug.getName());
             }

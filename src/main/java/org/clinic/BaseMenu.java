@@ -1,5 +1,7 @@
 package org.clinic;
 
+import org.w3c.dom.views.DocumentView;
+
 import javax.print.Doc;
 import java.sql.SQLException;
 import java.util.Random;
@@ -696,7 +698,8 @@ public class BaseMenu {
 
     public static void examineFromDoctor(Patient patient, Doctor doctor) throws SQLException, ClassNotFoundException {
         System.out.println("mr/ms " + patient.getName() + "you are talking to " + doctor.getName());
-        patient.setIllness(doctor.getSpecialty());
+//        updating illness details...
+        File.updateIllness(patient, doctor.getSpecialty());
 //        nurse selector
         int NursesSize = nurses.size();
         int NursesNum = new Random().nextInt(NursesSize) + 1;
@@ -750,9 +753,13 @@ public class BaseMenu {
         }
         if (drugBalance) {
             doctor.writePrescription(patient, drugArrayList);
-            System.out.println("please wait\nwe are redirecting you to main menu!");
-            sleepTime(1500);
-            patientCenter(patient);
+            System.out.println("0. back");
+            num = scanner.nextInt();
+            switch (num) {
+                case 0:
+                    patientCenter(patient);
+                    break;
+            }
         }
 
     }
@@ -761,18 +768,26 @@ public class BaseMenu {
         System.out.println("well you want to check your prescriptions...");
         System.out.println("here is all of your prescriptions :");
         int i = 1;
-        int j = 1;
-        for (Patient.Prescription prescription : patient.getPrescriptions()) {
-            System.out.println("number " + (i < 10 ? "0" + i : i) + " :");
-            System.out.println("You were examined in   : " + prescription.getDate());
-            System.out.println("You were examined by   : " + prescription.getDoctor().getName());
-            System.out.println("Dr wrote you this drug : ");
-            for (Drug drug : prescription.getMedication()) {
+        String docName = "";
+        for (Patient.Prescription prescription : File.LoadPrescription()) {
+            if (prescription.getPatientId() == patient.getId()) {
+                System.out.println("number " + (i < 10 ? "0" + i : i) + " :");
+                System.out.println("You were examined in   : " + prescription.getDate());
+                for (Doctor doc : doctors) {
+                    if (doc.getId() == prescription.getDoctor()) {
+                        docName = doc.getName();
+                    }
+                }
+                System.out.println("You were examined by   : " + docName);
+                System.out.println("Dr wrote you this drug : ");
                 System.out.print("   ");
-                System.out.println(j + ". " + drug.getName());
-                j++;
+                System.out.println("1. " + prescription.drug1);
+                System.out.println("    *************     ");
+                System.out.print("   ");
+                System.out.println("2. " + prescription.drug2);
+                System.out.println("    *************     ");
             }
-            System.out.println("    *************     ");
+            i++;
         }
         System.out.println("Result Finished ...\n");
         System.out.println("0. back");
