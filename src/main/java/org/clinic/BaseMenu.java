@@ -1,9 +1,11 @@
 package org.clinic;
 
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class BaseMenu {
     public static int num;
@@ -35,6 +37,7 @@ public class BaseMenu {
     public static void baseMenu() throws SQLException, ClassNotFoundException {
         System.out.println("1. manager panel");
         System.out.println("2. patient panel");
+        System.out.println("3. doctor panel");
         System.out.println("0. Exit");
         num = scanner.nextInt();
         try {
@@ -46,6 +49,8 @@ public class BaseMenu {
                 case 2:
                     patientPanel();
                     break;
+                case 3:
+                    doctorPanel(manager);
                 case 0:
                     throw new RuntimeException("Exit From Menu");
             }
@@ -731,8 +736,10 @@ public class BaseMenu {
 
     public static void examineFromDoctor(Patient patient, Doctor doctor) throws SQLException, ClassNotFoundException {
         System.out.println("mr/ms " + patient.getName() + "you are talking to " + doctor.getName());
+
 //        updating illness details...
         File.updateIllness(patient, doctor.getSpecialty());
+
 //        nurse selector
         int NursesSize = nurses.size();
         int NursesNum = new Random().nextInt(NursesSize) + 1;
@@ -745,12 +752,19 @@ public class BaseMenu {
                 break;
             }
         }
+
 //        end nusre selecting
         System.out.println("we select " + selectedNurse.getName() + " for you as nurse!");
         selectedNurse.addPatient(patient);
         System.out.println("Dr." + doctor.getName() + " select these drugs for you :");
+
+//        filtering drugs
+        ArrayList<Drug> availableDrug = drugs.stream()
+                .filter(drug -> drug.isAvailable())
+                .collect(Collectors.toCollection(ArrayList::new));
+
 //        selecting drug
-        int DrugSize = drugs.size();
+        int DrugSize = availableDrug.size();
         int DrugNum = new Random().nextInt(DrugSize) + 1;
         int DrugNum2 = new Random().nextInt(DrugSize) + 1;
         int Dcounter = 0;
@@ -759,7 +773,8 @@ public class BaseMenu {
         }
         int j = 1;
         ArrayList<Drug> drugArrayList = new ArrayList<>();
-        for (Drug drug : drugs) {
+
+        for (Drug drug : availableDrug) {
             Dcounter++;
             if (Dcounter == DrugNum) {
                 drugArrayList.add(drug);
@@ -854,6 +869,31 @@ public class BaseMenu {
                 patientCenter(patient);
                 break;
         }
+    }
+
+    public static void doctorPanel(Manager manager) {
+        clearConsole();
+        System.out.println("**** welcome dear ****");
+        System.out.println("select action from menu :");
+        System.out.println("1. submit your details");
+        System.out.println("2. Login to Your account");
+        num = scanner.nextInt();
+        switch (num) {
+            case 1:
+                submitDoctor(manager);
+                break;
+            case 2:
+                doctorLogin();
+                break;
+        }
+    }
+
+    public static void submitDoctor(Manager manager) {
+        
+    }
+
+    public static void doctorLogin(){
+
     }
 
     public static void sleepTime(int time) {
