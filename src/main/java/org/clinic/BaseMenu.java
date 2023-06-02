@@ -1,14 +1,9 @@
 package org.clinic;
 
-import org.w3c.dom.views.DocumentView;
-
-import javax.print.Doc;
-import javax.sql.rowset.RowSetWarning;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
-
 
 public class BaseMenu {
     public static int num;
@@ -55,9 +50,8 @@ public class BaseMenu {
                     throw new RuntimeException("Exit From Menu");
             }
         } catch (RuntimeException e) {
-            System.out.println(e);
+            System.out.println("Caught Your Order : " + e.getMessage());
         }
-
     }
 
     public static void managerLogin() throws SQLException, ClassNotFoundException {
@@ -75,7 +69,7 @@ public class BaseMenu {
             try {
                 throw new RuntimeException("username or password is wrong");
             } catch (RuntimeException e) {
-                System.out.println(e);
+                System.out.println("Error In Login : " + e.getMessage());
                 managerPanel(manager);
             }
         }
@@ -189,7 +183,7 @@ public class BaseMenu {
                 System.out.println("the doctor with name " + name + " removed!");
             }
         } catch (RuntimeException e) {
-            System.out.println(e);
+            System.out.println("Error In Finding Doctor : " + e.getMessage());
         }
         sleepTime(2000);
         manageDoctor();
@@ -229,7 +223,6 @@ public class BaseMenu {
             case 1:
                 addNurse();
                 break;
-
             case 2:
                 removeNurse();
                 break;
@@ -289,7 +282,7 @@ public class BaseMenu {
                 System.out.println("the nurse with name " + name + " removed!");
             }
         } catch (RuntimeException e) {
-            System.out.println(e);
+            System.out.println("Error In finding Nurse : " + e.getMessage());
         }
         sleepTime(2500);
         manageNurses();
@@ -387,7 +380,7 @@ public class BaseMenu {
                 System.out.println("the patient with name " + name + " removed!");
             }
         } catch (RuntimeException e) {
-            System.out.println(e);
+            System.out.println("Error In Finding Patient : " + e.getMessage());
         }
         sleepTime(2000);
         managePatient();
@@ -492,7 +485,7 @@ public class BaseMenu {
                 System.out.println("the personnel with name " + name + " removed!");
             }
         } catch (RuntimeException e) {
-            System.out.println(e);
+            System.out.println("Error In Finding Personnel : " + e.getMessage());
         }
         sleepTime(2000);
         managePersonnel();
@@ -588,7 +581,7 @@ public class BaseMenu {
                 System.out.println("the drug with name " + name + " removed!");
             }
         } catch (RuntimeException e) {
-            System.out.println(e);
+            System.out.println("Error in Finding Drug : " + e.getMessage());
         }
         sleepTime(2000);
         manageDrugs();
@@ -646,10 +639,10 @@ public class BaseMenu {
         for (Patient patient : patients) {
             try {
                 if (name.equals(patient.getName())) {
-                    throw new RuntimeException("please select another name!");
+                    throw new RuntimeException("please select another userName!");
                 }
             } catch (RuntimeException e) {
-                System.out.println(e);
+                System.out.println("Error In Taken UserName : " + e.getMessage());
                 IsValid = false;
             }
 
@@ -683,7 +676,7 @@ public class BaseMenu {
             try {
                 throw new RuntimeException("please enter name correctly!");
             } catch (RuntimeException e) {
-                System.out.println(e);
+                System.out.println("Error in Logging : " + e.getMessage());
                 sleepTime(1000);
                 patientLogin();
             }
@@ -789,9 +782,9 @@ public class BaseMenu {
                 System.out.println("well! we have this " + drug.getName());
             } else {
                 try {
-                    throw new RuntimeException("oops,we don't have this " + drug.getName());
+                    throw new RuntimeException("Oops,We don't have this " + drug.getName());
                 } catch (RuntimeException e) {
-                    System.out.println(e);
+                    System.out.println("Error processing drugs: " + e.getMessage());
                 }
             }
         }
