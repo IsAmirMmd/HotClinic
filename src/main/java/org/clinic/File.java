@@ -1,5 +1,6 @@
 package org.clinic;
 
+import javax.print.Doc;
 import java.awt.image.ConvolveOp;
 import java.sql.*;
 import java.time.Instant;
@@ -381,5 +382,50 @@ public class File {
         pstmt.close();
     }
 
+    public static void saveToDraft(Doctor doctor) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+        String sql = "INSERT INTO `draftdoctor`(`id`, `name`, `address`, `number`, `speciality`, `salary`) VALUES (?,?,?,?,?,?)";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+
+        stmt.setLong(1, doctor.getId());
+        stmt.setString(2, doctor.getName());
+        stmt.setString(3, doctor.getAddress());
+        stmt.setString(4, doctor.getPhone());
+        stmt.setString(5, doctor.getSpecialty());
+        stmt.setInt(6, 0);
+        stmt.executeUpdate();
+        stmt.close();
+        connection.close();
+
+    }
+
+    public static ArrayList<Doctor> LoadDoctors() throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+        ArrayList<Doctor> doctors = new ArrayList<>();
+
+        String query = "SELECT * FROM draftdoctor";
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            long id = rs.getInt(1);
+            String name = rs.getString(2);
+            String address = rs.getString(3);
+            String phone = rs.getString(4);
+            String speciality = rs.getString(5);
+            long salary = rs.getLong(6);
+            Doctor doctor = new Doctor(name, address, phone, speciality, salary);
+            doctor.setId(id);
+            doctors.add(doctor);
+        }
+        rs.close();
+        pstmt.close();
+        connection.close();
+
+        return doctors;
+    }
 
 }

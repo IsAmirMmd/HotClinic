@@ -1,5 +1,6 @@
 package org.clinic;
 
+import javax.print.Doc;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.sql.SQLException;
 import java.util.Random;
@@ -871,7 +872,7 @@ public class BaseMenu {
         }
     }
 
-    public static void doctorPanel(Manager manager) {
+    public static void doctorPanel(Manager manager) throws SQLException, ClassNotFoundException {
         clearConsole();
         System.out.println("**** welcome dear ****");
         System.out.println("select action from menu :");
@@ -888,11 +889,114 @@ public class BaseMenu {
         }
     }
 
-    public static void submitDoctor(Manager manager) {
-        
+    public static void submitDoctor(Manager manager) throws SQLException, ClassNotFoundException {
+        clearConsole();
+        boolean IsValid = true;
+        Scanner add = new Scanner(System.in);
+        System.out.println("Enter your name as userName: ");
+        String name = add.nextLine();
+
+        System.out.println("Enter your address: ");
+        String address = add.nextLine();
+
+        System.out.println("Enter your phone: ");
+        String phone = add.nextLine();
+
+        System.out.println("Enter your speciality code : ");
+        System.out.println("    *********    ");
+        System.out.println("1. Headache");
+        System.out.println("2. Allergy");
+        System.out.println("3. High blood pressure");
+        System.out.println("4. Diabetes");
+        System.out.println("5. Sinusitis");
+        System.out.println("6. Anemia");
+        String speciality = "";
+        int specialityCode = 0;
+        specialityCode = add.nextInt();
+
+        switch (specialityCode) {
+            case 1:
+                speciality = "Headache";
+                break;
+            case 2:
+                speciality = "Allergy";
+                break;
+            case 3:
+                speciality = "High blood pressure";
+                break;
+            case 4:
+                speciality = "Diabetes";
+                break;
+            case 5:
+                speciality = "Sinusitis";
+                break;
+            case 6:
+                speciality = "Anemia";
+                break;
+        }
+
+        System.out.println("your salary is depends on your speciality");
+//          checking the main doctor
+        for (Doctor doctor : doctors) {
+            try {
+                if (name.equals(doctor.getName())) {
+                    throw new RuntimeException("please select another userName!");
+                }
+            } catch (RuntimeException e) {
+                System.out.println("Error In Taken UserName : " + e.getMessage());
+                IsValid = false;
+            }
+
+        }
+//        checking the draft list
+        for (Doctor doctor : File.LoadDoctors()) {
+            try {
+                if (name.equals(doctor.getName())) {
+                    throw new RuntimeException("please select another userName!");
+                }
+            } catch (RuntimeException e) {
+                System.out.println("Error In Taken UserName : " + e.getMessage());
+                IsValid = false;
+            }
+
+        }
+        if (IsValid) {
+            Doctor doctor = new Doctor(name, address, phone, speciality, 0);
+            System.out.println("your request sent to manager and he/she will check in few hours!");
+            manager.addDraftDoctor(doctor);
+            doctorLogin();
+        } else {
+            submitDoctor(manager);
+        }
     }
 
-    public static void doctorLogin(){
+    public static void doctorLogin() throws ClassNotFoundException, SQLException {
+        clearConsole();
+        boolean IsValid = false;
+        Doctor tempDoctor = null;
+        System.out.println("Enter Your Name :");
+        Scanner login = new Scanner(System.in);
+        String name = login.nextLine();
+        for (Doctor doctor : doctors) {
+            if (name.equals(doctor.getName())) {
+                tempDoctor = doctor;
+                IsValid = true;
+            }
+        }
+        if (IsValid) {
+            doctorCenter(tempDoctor);
+        } else {
+            try {
+                throw new RuntimeException("please enter name correctly!");
+            } catch (RuntimeException e) {
+                System.out.println("Error in Logging : " + e.getMessage());
+                sleepTime(1000);
+                patientLogin();
+            }
+        }
+    }
+
+    private static void doctorCenter(Doctor doctor) {
 
     }
 

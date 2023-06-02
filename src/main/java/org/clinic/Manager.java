@@ -45,6 +45,11 @@ public class Manager extends Person
     }
 
     @Override
+    public void addDraftDoctor(Doctor doctor) throws SQLException, ClassNotFoundException {
+        File.saveToDraft(doctor);
+    }
+
+    @Override
     public ArrayList<Doctor> getDoctors() {
         return doctors;
     }
