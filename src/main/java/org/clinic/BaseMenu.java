@@ -3,6 +3,7 @@ package org.clinic;
 import org.w3c.dom.views.DocumentView;
 
 import javax.print.Doc;
+import javax.sql.rowset.RowSetWarning;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
@@ -39,15 +40,24 @@ public class BaseMenu {
     public static void baseMenu() throws SQLException, ClassNotFoundException {
         System.out.println("1. manager panel");
         System.out.println("2. patient panel");
+        System.out.println("0. Exit");
         num = scanner.nextInt();
-        switch (num) {
-            case 1:
-                managerLogin();
-                break;
-            case 2:
-                patientPanel();
-                break;
+        try {
+
+            switch (num) {
+                case 1:
+                    managerLogin();
+                    break;
+                case 2:
+                    patientPanel();
+                    break;
+                case 0:
+                    throw new RuntimeException("Exit From Menu");
+            }
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
+
     }
 
     public static void managerLogin() throws SQLException, ClassNotFoundException {
@@ -62,7 +72,12 @@ public class BaseMenu {
             System.out.println("you enter data correctly");
             managerPanel(manager);
         } else {
-            System.out.println("username or pasword is wrong");
+            try {
+                throw new RuntimeException("username or password is wrong");
+            } catch (RuntimeException e) {
+                System.out.println(e);
+                managerPanel(manager);
+            }
         }
     }
 
@@ -166,13 +181,15 @@ public class BaseMenu {
             }
         }
 
-        if (doctorToRemove == null) {
-            System.out.println("Doctor not found.");
-        } else {
-
-            manager.removeDoctor(doctorToRemove);
-
-            System.out.println("the doctor with name " + name + " removed!");
+        try {
+            if (doctorToRemove == null) {
+                throw new RuntimeException("Doctor not found.");
+            } else {
+                manager.removeDoctor(doctorToRemove);
+                System.out.println("the doctor with name " + name + " removed!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
         sleepTime(2000);
         manageDoctor();
@@ -187,7 +204,7 @@ public class BaseMenu {
             System.out.println("address    :  " + doctor.getAddress());
             System.out.println("phone      :  " + doctor.getPhone());
             System.out.println("speciality :  " + doctor.getSpecialty());
-            System.out.println("     *******************     ");
+            System.out.println("      *******************     ");
         }
         System.out.println("");
         System.out.println("0. back");
@@ -264,11 +281,15 @@ public class BaseMenu {
             }
         }
 
-        if (nurseToRemove == null) {
-            System.out.println("Nurse not found.");
-        } else {
-            manager.removeNurse(nurseToRemove);
-            System.out.println("the nurse with name " + name + " removed!");
+        try {
+            if (nurseToRemove == null) {
+                throw new RuntimeException("Nurse not found.");
+            } else {
+                manager.removeNurse(nurseToRemove);
+                System.out.println("the nurse with name " + name + " removed!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
         sleepTime(2500);
         manageNurses();
@@ -358,11 +379,15 @@ public class BaseMenu {
             }
         }
 
-        if (patientToRemove == null) {
-            System.out.println("Patient not found.");
-        } else {
-            manager.removePatient(patientToRemove);
-            System.out.println("the patient with name " + name + " removed!");
+        try {
+            if (patientToRemove == null) {
+                throw new RuntimeException("Patient not found.");
+            } else {
+                manager.removePatient(patientToRemove);
+                System.out.println("the patient with name " + name + " removed!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
         sleepTime(2000);
         managePatient();
@@ -459,11 +484,15 @@ public class BaseMenu {
             }
         }
 
-        if (personnelToRemove == null) {
-            System.out.println("personnel not found.");
-        } else {
-            manager.removePersonnel(personnelToRemove);
-            System.out.println("the personnel with name " + name + " removed!");
+        try {
+            if (personnelToRemove == null) {
+                throw new RuntimeException("personnel not found.");
+            } else {
+                manager.removePersonnel(personnelToRemove);
+                System.out.println("the personnel with name " + name + " removed!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
         sleepTime(2000);
         managePersonnel();
@@ -551,12 +580,16 @@ public class BaseMenu {
             }
         }
 
-        if (drugToRemove == null) {
-            System.out.println("Drug not found.");
+        try {
+            if (drugToRemove == null) {
+                throw new RuntimeException("Drug not found.");
+            } else {
+                manager.removeDrug(drugToRemove);
+                System.out.println("the drug with name " + name + " removed!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println(e);
         }
-        manager.removeDrug(drugToRemove);
-
-        System.out.println("the drug with name " + name + " removed!");
         sleepTime(2000);
         manageDrugs();
     }
@@ -611,10 +644,15 @@ public class BaseMenu {
         System.out.println("Enter your phone: ");
         String phone = add.nextLine();
         for (Patient patient : patients) {
-            if (name.equals(patient.getName())) {
-                System.out.println("please select another name!");
+            try {
+                if (name.equals(patient.getName())) {
+                    throw new RuntimeException("please select another name!");
+                }
+            } catch (RuntimeException e) {
+                System.out.println(e);
                 IsValid = false;
             }
+
         }
         if (IsValid) {
             Patient patient = new Patient(name, address, phone, null);
@@ -642,9 +680,13 @@ public class BaseMenu {
         if (IsValid) {
             patientCenter(tempPatient);
         } else {
-            System.out.println("please enter name correctly!");
-            sleepTime(1000);
-            patientLogin();
+            try {
+                throw new RuntimeException("please enter name correctly!");
+            } catch (RuntimeException e) {
+                System.out.println(e);
+                sleepTime(1000);
+                patientLogin();
+            }
         }
     }
 
@@ -746,7 +788,11 @@ public class BaseMenu {
             if (drug.isAvailable()) {
                 System.out.println("well! we have this " + drug.getName());
             } else {
-                System.out.println("oops,we don't have this " + drug.getName());
+                try {
+                    throw new RuntimeException("oops,we don't have this " + drug.getName());
+                } catch (RuntimeException e) {
+                    System.out.println(e);
+                }
             }
         }
         if (drugBalance) {
