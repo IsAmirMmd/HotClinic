@@ -142,7 +142,7 @@ public class File {
         }
         rs.close();
         pstmt.close();
-
+        conn.close();
         return patients;
     }
 
@@ -166,7 +166,7 @@ public class File {
         }
         rs.close();
         pstmt.close();
-
+        conn.close();
         return personnels;
     }
 
@@ -490,7 +490,9 @@ public class File {
         return prescriptions;
     }
 
-    public static void removePreDraft(Patient.Prescription prescription) throws SQLException {
+    public static void removePreDraft(Patient.Prescription prescription) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
         conn = DriverManager.getConnection(url, username, password);
         String deleteSql = "DELETE FROM `draftpre` WHERE id = ?";
         PreparedStatement pstmt = null;

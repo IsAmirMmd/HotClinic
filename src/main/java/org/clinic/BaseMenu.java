@@ -1,8 +1,5 @@
 package org.clinic;
 
-import javax.print.Doc;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Random;
@@ -38,6 +35,9 @@ public class BaseMenu {
 
 
     public static void baseMenu() throws SQLException, ClassNotFoundException {
+        clearConsole();
+        System.out.println("   ****** welcome to " + manager.getClinicName() + " ******");
+
         System.out.println("1. manager panel");
         System.out.println("2. patient panel");
         System.out.println("3. doctor panel");
@@ -64,11 +64,12 @@ public class BaseMenu {
 
     public static void managerLogin() throws SQLException, ClassNotFoundException {
         clearConsole();
-        boolean IsAllowed = false;
+        System.out.println("manager login page");
         Scanner admin = new Scanner(System.in);
-        System.out.println("Enter Admin UserName:");
+
+        System.out.println("Enter Admin UserName:(admin)");
         String userName = admin.nextLine();
-        System.out.println("Enter Admin passWord:");
+        System.out.println("Enter Admin passWord:(admin)");
         String passWord = admin.nextLine();
         if (userName.equals("admin") && passWord.equals("admin")) {
             System.out.println("you enter data correctly");
@@ -92,6 +93,7 @@ public class BaseMenu {
         System.out.println("3. manage patient");
         System.out.println("4. manage personnels");
         System.out.println("5. manage drugs");
+        System.out.println("0. main menu");
         num = scanner.nextInt();
         switch (num) {
             case 1:
@@ -112,6 +114,8 @@ public class BaseMenu {
             case 5:
                 manageDrugs();
                 break;
+            case 0:
+                baseMenu();
         }
     }
 
@@ -148,6 +152,7 @@ public class BaseMenu {
 
     public static void addDoctor() throws SQLException, ClassNotFoundException {
         clearConsole();
+        System.out.println("add doctor :");
         Scanner add = new Scanner(System.in);
         System.out.println("Enter doctor name: ");
         String name = add.nextLine();
@@ -174,6 +179,7 @@ public class BaseMenu {
 
     public static void removeDoctor() throws SQLException, ClassNotFoundException {
         clearConsole();
+        System.out.println("    *** remove doctor ***");
         Scanner remove = new Scanner(System.in);
         System.out.print("Enter doctor name: ");
         String name = remove.nextLine();
@@ -247,7 +253,7 @@ public class BaseMenu {
 
         System.out.println("here is all of requests");
         System.out.println("    *********");
-
+        int i = 0;
         for (Doctor doctor : File.LoadDoctors()) {
             System.out.println("ID         :  " + doctor.getId());
             System.out.println("name       :  " + doctor.getName());
@@ -255,55 +261,65 @@ public class BaseMenu {
             System.out.println("phone      :  " + doctor.getPhone());
             System.out.println("speciality :  " + doctor.getSpecialty());
             System.out.println("      *******************     ");
+            i++;
         }
         System.out.println("finished result...");
-        System.out.println("Enter Doctor ID To Do Remove/Submit");
-        int DoctorID = submit.nextInt();
+        if (i != 0) {
+            System.out.println("Enter Doctor ID To Do Remove/Submit");
+            int DoctorID = submit.nextInt();
 //        fetch Doctor
-        boolean IsValid = false;
-        Doctor tempDoctor = null;
-        for (Doctor doctor : File.LoadDoctors()) {
-            if (doctor.getId() == DoctorID) {
-                IsValid = true;
-                tempDoctor = doctor;
-            }
-        }
-        try {
-            if (IsValid) {
-            } else {
-                throw new RuntimeException("ID isn't valid!");
-            }
-        } catch (RuntimeException e) {
-            System.out.println("Error in Finding Doctor with this ID : " + e.getMessage());
-            sleepTime(1500);
-            doctorReq(manager);
-        }
-//      needed action ...
-        boolean IsValidPage = false;
-        System.out.println("what do you want to do?");
-        System.out.println("1. submit");
-        System.out.println("2. remove");
-        int pageID = submit.nextInt();
-        if (pageID == 1 || pageID == 2) {
-            IsValidPage = true;
-        }
-        try {
-            if (IsValidPage) {
-                switch (pageID) {
-                    case 1:
-                        acceptDoctor(tempDoctor, manager);
-                        break;
-                    case 2:
-                        removeReq(tempDoctor);
-                        break;
+            boolean IsValid = false;
+            Doctor tempDoctor = null;
+            for (Doctor doctor : File.LoadDoctors()) {
+                if (doctor.getId() == DoctorID) {
+                    IsValid = true;
+                    tempDoctor = doctor;
                 }
-            } else {
-                throw new RuntimeException("page number isn't valid!");
             }
-        } catch (RuntimeException e) {
-            System.out.println("Error in Finding Page: " + e.getMessage());
-            sleepTime(1500);
-            doctorReq(manager);
+            try {
+                if (IsValid) {
+                } else {
+                    throw new RuntimeException("ID isn't valid!");
+                }
+            } catch (RuntimeException e) {
+                System.out.println("Error in Finding Doctor with this ID : " + e.getMessage());
+                sleepTime(1500);
+                doctorReq(manager);
+            }
+//      needed action ...
+            boolean IsValidPage = false;
+            System.out.println("what do you want to do?");
+            System.out.println("1. submit");
+            System.out.println("2. remove");
+            int pageID = submit.nextInt();
+            if (pageID == 1 || pageID == 2) {
+                IsValidPage = true;
+            }
+            try {
+                if (IsValidPage) {
+                    switch (pageID) {
+                        case 1:
+                            acceptDoctor(tempDoctor, manager);
+                            break;
+                        case 2:
+                            removeReq(tempDoctor);
+                            break;
+                    }
+                } else {
+                    throw new RuntimeException("page number isn't valid!");
+                }
+            } catch (RuntimeException e) {
+                System.out.println("Error in Finding Page: " + e.getMessage());
+                sleepTime(1500);
+                doctorReq(manager);
+            }
+        } else {
+            System.out.println("0. back");
+            num = submit.nextInt();
+            switch (num) {
+                default:
+                    manageDoctor();
+            }
         }
 
     }
@@ -752,6 +768,7 @@ public class BaseMenu {
         System.out.println("select action from menu :");
         System.out.println("1. submit your details");
         System.out.println("2. Login to Your account");
+        System.out.println("0. main menu");
         num = scanner.nextInt();
         switch (num) {
             case 1:
@@ -759,6 +776,9 @@ public class BaseMenu {
                 break;
             case 2:
                 patientLogin();
+                break;
+            case 0:
+                baseMenu();
                 break;
         }
     }
@@ -798,6 +818,7 @@ public class BaseMenu {
 
     public static void patientLogin() throws SQLException, ClassNotFoundException {
         clearConsole();
+        System.out.println("patient Login page");
         boolean IsValid = false;
         Patient tempPatient = null;
         System.out.println("Enter Your Name :");
@@ -830,6 +851,7 @@ public class BaseMenu {
         System.out.println("1. need examine");
         System.out.println("2. check prescriptions");
         System.out.println("3. check medications");
+        System.out.println("0. main menu");
         num = scanner.nextInt();
         switch (num) {
             case 1:
@@ -843,6 +865,8 @@ public class BaseMenu {
             case 3:
                 medication(patient);
                 break;
+            case 0:
+                baseMenu();
         }
     }
 
@@ -869,8 +893,8 @@ public class BaseMenu {
     }
 
     public static void examineFromDoctor(Patient patient, Doctor doctor) throws SQLException, ClassNotFoundException {
-        System.out.println("mr/ms " + patient.getName() + "you are talking to " + doctor.getName());
-
+        System.out.println("mr/ms " + patient.getName() + " you are talking to " + doctor.getName());
+        doctor.addPatient(patient);
 //        updating illness details...
         File.updateIllness(patient, doctor.getSpecialty());
 
@@ -962,10 +986,11 @@ public class BaseMenu {
 
     public static void doctorPanel(Manager manager) throws SQLException, ClassNotFoundException {
         clearConsole();
-        System.out.println("**** welcome dear ****");
+        System.out.println("**** welcome dear to doctor panel ****");
         System.out.println("select action from menu :");
         System.out.println("1. submit your details");
         System.out.println("2. Login to Your account");
+        System.out.println("0. main menu");
         num = scanner.nextInt();
         switch (num) {
             case 1:
@@ -974,11 +999,14 @@ public class BaseMenu {
             case 2:
                 doctorLogin();
                 break;
+            case 0:
+                baseMenu();
         }
     }
 
     public static void submitDoctor(Manager manager) throws SQLException, ClassNotFoundException {
         clearConsole();
+        System.out.println("submit doctor page");
         boolean IsValid = true;
         Scanner add = new Scanner(System.in);
         System.out.println("Enter your name as userName: ");
@@ -1052,7 +1080,7 @@ public class BaseMenu {
             Doctor doctor = new Doctor(name, address, phone, speciality, 0);
             System.out.println("your request sent to manager and he/she will check in few hours!");
             manager.addDraftDoctor(doctor);
-            doctorLogin();
+            doctorPanel(manager);
         } else {
             submitDoctor(manager);
         }
@@ -1060,6 +1088,7 @@ public class BaseMenu {
 
     public static void doctorLogin() throws ClassNotFoundException, SQLException {
         clearConsole();
+        System.out.println("doctor login page");
         boolean IsValid = false;
         Doctor tempDoctor = null;
         System.out.println("Enter Your Name :");
@@ -1093,6 +1122,7 @@ public class BaseMenu {
         System.out.println("2. check prescriptions");
         System.out.println("3. check patient lists");
         System.out.println("4. check drugStore");
+        System.out.println("0. main menu");
         num = scanner.nextInt();
         switch (num) {
             case 1:
@@ -1106,6 +1136,9 @@ public class BaseMenu {
                 break;
             case 4:
                 checkDrugStore(doctor);
+                break;
+            case 0:
+                baseMenu();
                 break;
         }
     }
@@ -1153,12 +1186,9 @@ public class BaseMenu {
         }
         System.out.println("finished result");
 
-        num = scanner.nextInt();
         System.out.println("0. back");
+        num = scanner.nextInt();
         switch (num) {
-            case 0:
-                doctorCenter(doctor);
-                break;
             default:
                 doctorCenter(doctor);
                 break;
@@ -1187,8 +1217,9 @@ public class BaseMenu {
 
         System.out.println("finished result...");
 
-        num = scanner.nextInt();
         System.out.println("0. back");
+
+        num = scanner.nextInt();
         switch (num) {
             case 0:
                 doctorCenter(doctor);
@@ -1203,36 +1234,46 @@ public class BaseMenu {
         ArrayList<Patient.Prescription> thisDoctor = File.LoadPre()
                 .stream().filter(pre -> pre.getDoctor() == doctor.getId())
                 .collect(Collectors.toCollection(ArrayList::new));
-
+        int i = 0;
         for (Patient.Prescription prescription : thisDoctor) {
             System.out.println("ID                      : " + prescription.getID());
             System.out.println("it has been written in  : " + prescription.getDate());
             System.out.println("it has been written for : " + prescription.getPatientId());
             System.out.println("    *************     ");
+            i++;
         }
-
+        if (i != 0) {
+            System.out.println("Enter Prescription ID To write Drugs for it");
+            int preID = submit.nextInt();
+            boolean IsValid = false;
+            Patient.Prescription tempPrescription = null;
+            for (Patient.Prescription prescription : thisDoctor) {
+                if (prescription.getID() == preID) {
+                    IsValid = true;
+                    tempPrescription = prescription;
+                }
+            }
+            try {
+                if (IsValid) {
+                    writeNewPrescription(doctor, tempPrescription);
+                } else {
+                    throw new RuntimeException("ID isn't valid!");
+                }
+            } catch (RuntimeException e) {
+                System.out.println("Error in Finding Prescription with this ID : " + e.getMessage());
+                sleepTime(1500);
+                examineWriting(doctor);
+            }
+        } else {
+            System.out.println("0. back");
+            num = submit.nextInt();
+            switch (num) {
+                default:
+                    doctorCenter(doctor);
+            }
+        }
         System.out.println("finished result...");
-        System.out.println("Enter Prescription ID To write Drugs for it");
-        int preID = submit.nextInt();
-        boolean IsValid = false;
-        Patient.Prescription tempPrescription = null;
-        for (Patient.Prescription prescription : thisDoctor) {
-            if (prescription.getID() == preID) {
-                IsValid = true;
-                tempPrescription = prescription;
-            }
-        }
-        try {
-            if (IsValid) {
-                writeNewPrescription(doctor, tempPrescription);
-            } else {
-                throw new RuntimeException("ID isn't valid!");
-            }
-        } catch (RuntimeException e) {
-            System.out.println("Error in Finding Prescription with this ID : " + e.getMessage());
-            sleepTime(1500);
-            examineWriting(doctor);
-        }
+
     }
 
     public static void writeNewPrescription(Doctor doctor, Patient.Prescription prescription)
@@ -1250,20 +1291,22 @@ public class BaseMenu {
 
         Scanner drugName = new Scanner(System.in);
         System.out.println("enter first drug id:");
-        long drug1 = drugName.nextLong();
+        int drug1 = drugName.nextInt();
         System.out.println("enter second drug id:");
-        long drug2 = drugName.nextLong();
+        int drug2 = drugName.nextInt();
+
         boolean IsDrug1 = false;
         boolean IsDrug2 = false;
+
         ArrayList<Drug> tempDrugs = new ArrayList<>();
+
         for (Drug drug : drugs) {
             if (drug.getUid() == drug1) {
-                tempDrugs.add(drug);
                 IsDrug1 = true;
+                tempDrugs.add(drug);
             } else if (drug.getUid() == drug2) {
+                IsDrug2 = true;
                 tempDrugs.add(drug);
-                IsDrug1 = true;
-
             }
         }
         Patient tempPatient = null;
@@ -1272,6 +1315,7 @@ public class BaseMenu {
             if (patient.getId() == prescription.getPatientId())
                 tempPatient = patient;
         }
+        System.out.println(tempPatient.getName());
         try {
             if (IsDrug1 && IsDrug2) {
                 doctor.writePrescription(prescription, tempPatient, tempDrugs);
