@@ -439,5 +439,67 @@ public class File {
         conn.close();
     }
 
+    public static void saveToDraft(Patient.Prescription pre) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+        String sql = "INSERT INTO `draftpre`(`id`, `date`, `patient_id`, `doctor_id`) VALUES (?,?,?,?)";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+
+        stmt.setLong(1, pre.getID());
+        stmt.setString(2, pre.getDate());
+        stmt.setLong(3, pre.getPatientId());
+        stmt.setLong(4, pre.getDoctor());
+        stmt.executeUpdate();
+        stmt.close();
+        connection.close();
+
+    }
+
+    public static ArrayList<Patient.Prescription> LoadPre() throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+        ArrayList<Patient.Prescription> prescriptions = new ArrayList<>();
+
+        String query = "SELECT * FROM draftpre";
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            long id = rs.getLong(1);
+            String dates = rs.getString(2);
+            long doc_id = rs.getLong(3);
+            long pa_id = rs.getLong(4);
+            String dateString = dates;
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy");
+            Date date = new Date();
+            try {
+                LocalDateTime localDateTime = LocalDateTime.parse(dateString, dateFormat);
+                date = Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant());
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+            }
+            Patient.Prescription prescription = new Patient.Prescription(date, "drug1", "drug2", doc_id, pa_id);
+            prescription.setID(id);
+            prescriptions.add(prescription);
+        }
+        rs.close();
+        pstmt.close();
+        connection.close();
+
+        return prescriptions;
+    }
+
+    public static void removePreDraft(Patient.Prescription prescription) throws SQLException {
+        conn = DriverManager.getConnection(url, username, password);
+        String deleteSql = "DELETE FROM `draftpre` WHERE id = ?";
+        PreparedStatement pstmt = null;
+        pstmt = conn.prepareStatement(deleteSql);
+        pstmt.setLong(1, prescription.getID());
+        pstmt.executeUpdate();
+        pstmt.close();
+        conn.close();
+    }
+
 
 }

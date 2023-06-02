@@ -332,7 +332,7 @@ public class BaseMenu {
 
     public static void removeReq(Doctor doctor) throws SQLException, ClassNotFoundException {
         Scanner income = new Scanner(System.in);
-        System.out.println("Are You Sure for removing request from Dr."+doctor.getName()+" ?");
+        System.out.println("Are You Sure for removing request from Dr." + doctor.getName() + " ?");
         System.out.println("0. back and select another one");
         String answer = income.nextLine();
         if (answer == "0") {
@@ -1127,9 +1127,26 @@ public class BaseMenu {
         }
     }
 
-    private static void doctorCenter(Doctor doctor) {
+    public static void doctorCenter(Doctor doctor) {
+        clearConsole();
 
+        System.out.println("**** welcome dear " + doctor.getName() + " *****");
+        System.out.println("select action from menu :");
+        System.out.println("1. writing examine");
+        System.out.println("2. check prescriptions");
+        System.out.println("3. check patient lists");
+        System.out.println("4. check drugStore");
+        num = scanner.nextInt();
+        switch (num) {
+            case 1:
+
+            case 2:
+
+            case 3:
+                break;
+        }
     }
+
 
     public static void sleepTime(int time) {
         try {
