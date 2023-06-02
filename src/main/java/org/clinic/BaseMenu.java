@@ -1099,8 +1099,99 @@ public class BaseMenu {
                 examineWriting(doctor);
                 break;
             case 2:
-
+                checkingExamine(doctor);
+                break;
             case 3:
+                patientLists(doctor);
+                break;
+            case 4:
+                checkDrugStore(doctor);
+                break;
+        }
+    }
+
+    public static void checkDrugStore(Doctor doctor)
+            throws SQLException, ClassNotFoundException {
+        clearConsole();
+        System.out.println("showing all drugs...");
+        for (Drug drug : drugs) {
+            System.out.println("ID                :  " + drug.getUid());
+            System.out.println("name              :  " + drug.getName());
+            System.out.println("quantity          :  " + drug.getQuantity());
+            System.out.println("availability      :  " + drug.isAvailable());
+            System.out.println("     *******************     ");
+        }
+        System.out.println("");
+        System.out.println("0. back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 0:
+                doctorCenter(doctor);
+                break;
+        }
+    }
+
+    public static void patientLists(Doctor doctor)
+            throws SQLException, ClassNotFoundException {
+        clearConsole();
+
+        System.out.println("well you want to check your patients...");
+        System.out.println("here is all of your patients and their date :");
+        ArrayList<Patient.Prescription> thisDoctor = File.LoadPrescription()
+                .stream().filter(pre -> pre.getDoctor() == doctor.getId())
+                .collect(Collectors.toCollection(ArrayList::new));
+        String patientName = "";
+        for (Patient.Prescription prescription : thisDoctor) {
+            for (Patient patient : patients) {
+                if (patient.getId() == prescription.getPatientId())
+                    patientName = patient.getName();
+            }
+            System.out.println("patient ID      : " + prescription.getPatientId());
+            System.out.println("patient name    : " + patientName);
+            System.out.println("examine date    : " + prescription.getDate());
+            System.out.println("    ***********    ");
+        }
+        System.out.println("finished result");
+
+        num = scanner.nextInt();
+        System.out.println("0. back");
+        switch (num) {
+            case 0:
+                doctorCenter(doctor);
+                break;
+            default:
+                doctorCenter(doctor);
+                break;
+        }
+    }
+
+    public static void checkingExamine(Doctor doctor)
+            throws SQLException, ClassNotFoundException {
+        clearConsole();
+
+        System.out.println("well you want to check your prescriptions...");
+        System.out.println("here is all of your prescriptions :");
+        ArrayList<Patient.Prescription> thisDoctor = File.LoadPrescription()
+                .stream().filter(pre -> pre.getDoctor() == doctor.getId())
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (Patient.Prescription prescription : thisDoctor) {
+            System.out.println("ID                      : " + prescription.getID());
+            System.out.println("it has been written in  : " + prescription.getDate());
+            System.out.println("it has been written for : " + prescription.getPatientId());
+            System.out.println("You Wrote these drugs   : ");
+            System.out.println("    1. " + prescription.drug1);
+            System.out.println("    2. " + prescription.drug2);
+            System.out.println("    *************     ");
+        }
+
+        System.out.println("finished result...");
+
+        num = scanner.nextInt();
+        System.out.println("0. back");
+        switch (num) {
+            case 0:
+                doctorCenter(doctor);
                 break;
         }
     }
@@ -1191,10 +1282,20 @@ public class BaseMenu {
         } catch (RuntimeException e) {
             System.out.println("Error in finding Drug : " + e.getMessage());
             sleepTime(1000);
-            writeNewPrescription(doctor,prescription);
+            writeNewPrescription(doctor, prescription);
         }
 
-
+        System.out.println("1. check another one");
+        System.out.println("0. back");
+        num = drugName.nextInt();
+        switch (num) {
+            case 1:
+                examineWriting(doctor);
+                break;
+            case 0:
+                doctorCenter(doctor);
+                break;
+        }
     }
 
 
