@@ -2,7 +2,9 @@ package org.clinic;
 
 import javax.print.Doc;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -888,64 +890,19 @@ public class BaseMenu {
 //        end nusre selecting
         System.out.println("we select " + selectedNurse.getName() + " for you as nurse!");
         selectedNurse.addPatient(patient);
-        System.out.println("Dr." + doctor.getName() + " select these drugs for you :");
 
-//        filtering drugs
-        ArrayList<Drug> availableDrug = drugs.stream()
-                .filter(drug -> drug.isAvailable())
-                .collect(Collectors.toCollection(ArrayList::new));
+        Patient.Prescription tempPrescription = new Patient.Prescription(new Date(), "drug1", "drug2", doctor.getId(), patient.getId());
+        File.saveToDraft(tempPrescription);
 
-//        selecting drug
-        int DrugSize = availableDrug.size();
-        int DrugNum = new Random().nextInt(DrugSize) + 1;
-        int DrugNum2 = new Random().nextInt(DrugSize) + 1;
-        int Dcounter = 0;
-        while (DrugNum2 == DrugNum) {
-            DrugNum2 = new Random().nextInt(DrugSize) + 1;
+        System.out.println("after submitting prescription you can see it in your dashboard");
+
+        System.out.println("0. Submit and Back");
+        num = scanner.nextInt();
+        switch (num) {
+            case 0:
+                patientCenter(patient);
+                break;
         }
-        int j = 1;
-        ArrayList<Drug> drugArrayList = new ArrayList<>();
-
-        for (Drug drug : availableDrug) {
-            Dcounter++;
-            if (Dcounter == DrugNum) {
-                drugArrayList.add(drug);
-                System.out.println(j + ". " + drug.getName());
-                j++;
-
-            } else if (Dcounter == DrugNum2) {
-                drugArrayList.add(drug);
-                System.out.println(j + ". " + drug.getName());
-                j++;
-            }
-        }
-//        end of selecting drug
-        System.out.println("wait until we are checking availability in drugStore ...");
-        sleepTime(1000);
-//        loading
-        boolean drugBalance = true;
-        for (Drug drug : drugArrayList) {
-            if (drug.isAvailable()) {
-                System.out.println("well! we have this " + drug.getName());
-            } else {
-                try {
-                    throw new RuntimeException("Oops,We don't have this " + drug.getName());
-                } catch (RuntimeException e) {
-                    System.out.println("Error processing drugs: " + e.getMessage());
-                }
-            }
-        }
-        if (drugBalance) {
-            doctor.writePrescription(patient, drugArrayList);
-            System.out.println("0. back");
-            num = scanner.nextInt();
-            switch (num) {
-                case 0:
-                    patientCenter(patient);
-                    break;
-            }
-        }
-
     }
 
     public static void prescriptions(Patient patient) throws SQLException, ClassNotFoundException {
@@ -1127,7 +1084,7 @@ public class BaseMenu {
         }
     }
 
-    public static void doctorCenter(Doctor doctor) {
+    public static void doctorCenter(Doctor doctor) throws SQLException, ClassNotFoundException {
         clearConsole();
 
         System.out.println("**** welcome dear " + doctor.getName() + " *****");
@@ -1139,12 +1096,105 @@ public class BaseMenu {
         num = scanner.nextInt();
         switch (num) {
             case 1:
-
+                examineWriting(doctor);
+                break;
             case 2:
 
             case 3:
                 break;
         }
+    }
+
+    public static void examineWriting(Doctor doctor) throws SQLException, ClassNotFoundException {
+        System.out.println("here is all of prescription that are ready to send for patients");
+        Scanner submit = new Scanner(System.in);
+
+        ArrayList<Patient.Prescription> thisDoctor = File.LoadPre()
+                .stream().filter(pre -> pre.getDoctor() == doctor.getId())
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (Patient.Prescription prescription : thisDoctor) {
+            System.out.println("ID                      : " + prescription.getID());
+            System.out.println("it has been written in  : " + prescription.getDate());
+            System.out.println("it has been written for : " + prescription.getPatientId());
+            System.out.println("    *************     ");
+        }
+
+        System.out.println("finished result...");
+        System.out.println("Enter Prescription ID To write Drugs for it");
+        int preID = submit.nextInt();
+        boolean IsValid = false;
+        Patient.Prescription tempPrescription = null;
+        for (Patient.Prescription prescription : thisDoctor) {
+            if (prescription.getID() == preID) {
+                IsValid = true;
+                tempPrescription = prescription;
+            }
+        }
+        try {
+            if (IsValid) {
+                writeNewPrescription(doctor, tempPrescription);
+            } else {
+                throw new RuntimeException("ID isn't valid!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println("Error in Finding Prescription with this ID : " + e.getMessage());
+            sleepTime(1500);
+            examineWriting(doctor);
+        }
+    }
+
+    public static void writeNewPrescription(Doctor doctor, Patient.Prescription prescription)
+            throws SQLException, ClassNotFoundException {
+        clearConsole();
+        System.out.println("what Drugs you want to submit for this patient?");
+
+        for (Drug drug : drugs) {
+            System.out.println("ID                :  " + drug.getUid());
+            System.out.println("name              :  " + drug.getName());
+            System.out.println("quantity          :  " + drug.getQuantity());
+            System.out.println("availability      :  " + drug.isAvailable());
+            System.out.println("     *******************     ");
+        }
+
+        Scanner drugName = new Scanner(System.in);
+        System.out.println("enter first drug id:");
+        long drug1 = drugName.nextLong();
+        System.out.println("enter second drug id:");
+        long drug2 = drugName.nextLong();
+        boolean IsDrug1 = false;
+        boolean IsDrug2 = false;
+        ArrayList<Drug> tempDrugs = new ArrayList<>();
+        for (Drug drug : drugs) {
+            if (drug.getUid() == drug1) {
+                tempDrugs.add(drug);
+                IsDrug1 = true;
+            } else if (drug.getUid() == drug2) {
+                tempDrugs.add(drug);
+                IsDrug1 = true;
+
+            }
+        }
+        Patient tempPatient = null;
+
+        for (Patient patient : patients) {
+            if (patient.getId() == prescription.getPatientId())
+                tempPatient = patient;
+        }
+        try {
+            if (IsDrug1 && IsDrug2) {
+                doctor.writePrescription(prescription, tempPatient, tempDrugs);
+                System.out.println("wait for submit and add to patient dashboard");
+            } else {
+                throw new RuntimeException("one or more of drug(s)'s ID isn't correct");
+            }
+        } catch (RuntimeException e) {
+            System.out.println("Error in finding Drug : " + e.getMessage());
+            sleepTime(1000);
+            writeNewPrescription(doctor,prescription);
+        }
+
+
     }
 
 

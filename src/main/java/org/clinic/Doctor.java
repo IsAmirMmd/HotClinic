@@ -2,7 +2,11 @@ package org.clinic;
 
 import javax.print.Doc;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Doctor extends Person {
     private String specialty;
@@ -37,7 +41,8 @@ public class Doctor extends Person {
         return null;
     }
 
-    public Patient.Prescription writePrescription(Patient patient, ArrayList<Drug> medication) throws SQLException, ClassNotFoundException {
+    public Patient.Prescription writePrescription(Patient.Prescription tempPrescription, Patient patient, ArrayList<Drug> medication)
+            throws SQLException, ClassNotFoundException {
         String drug1 = "null";
         String drug2 = "null";
         int i = 0;
@@ -56,28 +61,26 @@ public class Doctor extends Person {
                 }
                 i++;
             }
-            Patient.Prescription prescription = new Patient.Prescription(new java.util.Date(), drug1, drug2, this.getId(), patient.getId());
+            String dateString = tempPrescription.getDate();
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy");
+            Date date = new Date();
+            try {
+                LocalDateTime localDateTime = LocalDateTime.parse(dateString, dateFormat);
+                date = Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant());
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+            }
+            Patient.Prescription prescription = new Patient.Prescription(date, drug1, drug2, this.getId(), patient.getId());
             File.writePrescription(patient, prescription);
             for (Drug drug : medication) {
                 patient.addMedication(drug.getName());
             }
             patient.addPrescription(prescription);
+            File.removePreDraft(tempPrescription);
             return prescription;
         }
         return null;
     }
 
-    public static ArrayList<Doctor> firstLoad() {
-        ArrayList<Doctor> doctors = new ArrayList<>();
-
-        doctors.add(new Doctor("Dr. Ali Mohammadi", "Tehran, Valiasr Street", "09123456789", "Headache", 1500000));
-        doctors.add(new Doctor("Dr. Sara Rahimi", "Isfahan, Chaharbagh Street", "09123456789", "Anemia", 1500000));
-        doctors.add(new Doctor("Dr. Mohammad Hosseini", "Shiraz, Hafez Street", "09123456789", "Allergy", 1500000));
-        doctors.add(new Doctor("Dr. Maryam Farahani", "Tabriz, Saat Square", "09123456789", "High blood pressure", 1500000));
-        doctors.add(new Doctor("Dr. Hossein Zarei", "Mashhad, Imam Reza Street", "09123456789", "Sinusitis", 1500000));
-        doctors.add(new Doctor("Dr. Zahra Gholami", "Tehran, Enghelab Street", "09123456789", "Diabetes", 1500000));
-
-        return doctors;
-    }
 
 }

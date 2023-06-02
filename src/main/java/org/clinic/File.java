@@ -443,13 +443,13 @@ public class File {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection = DriverManager.getConnection(url, username, password);
 
-        String sql = "INSERT INTO `draftpre`(`id`, `date`, `patient_id`, `doctor_id`) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO `draftpre`(`id`, `date`, `doctor_id`, `patient_id`) VALUES (?,?,?,?)";
         PreparedStatement stmt = connection.prepareStatement(sql);
 
         stmt.setLong(1, pre.getID());
         stmt.setString(2, pre.getDate());
-        stmt.setLong(3, pre.getPatientId());
-        stmt.setLong(4, pre.getDoctor());
+        stmt.setLong(3, pre.getDoctor());
+        stmt.setLong(4, pre.getPatientId());
         stmt.executeUpdate();
         stmt.close();
         connection.close();
