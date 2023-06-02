@@ -428,4 +428,16 @@ public class File {
         return doctors;
     }
 
+    public static void removeDraft(Doctor doctor) throws SQLException {
+        conn = DriverManager.getConnection(url, username, password);
+        String deleteSql = "DELETE FROM `draftdoctor` WHERE id = ?";
+        PreparedStatement pstmt = null;
+        pstmt = conn.prepareStatement(deleteSql);
+        pstmt.setLong(1, doctor.getId());
+        pstmt.executeUpdate();
+        pstmt.close();
+        conn.close();
+    }
+
+
 }

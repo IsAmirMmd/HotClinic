@@ -119,6 +119,7 @@ public class BaseMenu {
         System.out.println("1. Add Doctor");
         System.out.println("2. Remove Doctor");
         System.out.println("3. Show All Doctors");
+        System.out.println("4. Checking Doctor Requests");
         System.out.println("0. Back");
         num = scanner.nextInt();
 
@@ -134,7 +135,9 @@ public class BaseMenu {
             case 3:
                 showAllDoctor();
                 break;
-
+            case 4:
+                doctorReq(manager);
+                break;
             case 0:
                 managerPanel(manager);
                 break;
@@ -214,6 +217,134 @@ public class BaseMenu {
                 manageDoctor();
                 break;
         }
+    }
+
+    public static void connectionRequest(Manager manager) throws SQLException, ClassNotFoundException {
+        Scanner submit = new Scanner(System.in);
+
+        System.out.println("what do you want to do?");
+        System.out.println("1. check requests");
+        System.out.println("0. back");
+
+        int num = submit.nextInt();
+
+        switch (num) {
+            case 1:
+                doctorReq(manager);
+                break;
+            case 0:
+                manageDoctor();
+                break;
+        }
+    }
+
+    public static void doctorReq(Manager manager) throws SQLException, ClassNotFoundException {
+        clearConsole();
+
+        Scanner submit = new Scanner(System.in);
+
+        System.out.println("here is all of requests");
+        System.out.println("    *********");
+
+        for (Doctor doctor : File.LoadDoctors()) {
+            System.out.println("ID         :  " + doctor.getId());
+            System.out.println("name       :  " + doctor.getName());
+            System.out.println("address    :  " + doctor.getAddress());
+            System.out.println("phone      :  " + doctor.getPhone());
+            System.out.println("speciality :  " + doctor.getSpecialty());
+            System.out.println("      *******************     ");
+        }
+        System.out.println("finished result...");
+        System.out.println("Enter Doctor ID To Do Remove/Submit");
+        int DoctorID = submit.nextInt();
+//        fetch Doctor
+        boolean IsValid = false;
+        Doctor tempDoctor = null;
+        for (Doctor doctor : File.LoadDoctors()) {
+            if (doctor.getId() == DoctorID) {
+                IsValid = true;
+                tempDoctor = doctor;
+            }
+        }
+        try {
+            if (IsValid) {
+            } else {
+                throw new RuntimeException("ID isn't valid!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println("Error in Finding Doctor with this ID : " + e.getMessage());
+            sleepTime(1500);
+            doctorReq(manager);
+        }
+//      needed action ...
+        boolean IsValidPage = false;
+        System.out.println("what do you want to do?");
+        System.out.println("1. submit");
+        System.out.println("2. remove");
+        int pageID = submit.nextInt();
+        if (pageID == 1 || pageID == 2) {
+            IsValidPage = true;
+        }
+        try {
+            if (IsValidPage) {
+                switch (pageID) {
+                    case 1:
+                        acceptDoctor(tempDoctor, manager);
+                        break;
+                    case 2:
+                        removeReq(tempDoctor);
+                        break;
+                }
+            } else {
+                throw new RuntimeException("page number isn't valid!");
+            }
+        } catch (RuntimeException e) {
+            System.out.println("Error in Finding Page: " + e.getMessage());
+            sleepTime(1500);
+            doctorReq(manager);
+        }
+
+    }
+
+
+    public static void acceptDoctor(Doctor tempDoctor, Manager manager) throws SQLException, ClassNotFoundException {
+        Scanner income = new Scanner(System.in);
+
+        System.out.println("Enter Salary for Dr." + tempDoctor.getName());
+        System.out.println("Speciality  : " + tempDoctor.getSpecialty());
+        System.out.println("0. back and select another one");
+        int Salary = income.nextInt();
+        if (Salary == 0) {
+            doctorReq(manager);
+        } else {
+            tempDoctor.setSalary(Salary);
+
+            manager.addDoctor(tempDoctor);
+            File.removeDraft(tempDoctor);
+
+            System.out.println("Doctor With Name, Dr." + tempDoctor.getName() + " added to DoctorList");
+
+            connectionRequest(manager);
+        }
+
+
+    }
+
+    public static void removeReq(Doctor doctor) throws SQLException, ClassNotFoundException {
+        Scanner income = new Scanner(System.in);
+        System.out.println("Are You Sure for removing request from Dr."+doctor.getName()+" ?");
+        System.out.println("0. back and select another one");
+        String answer = income.nextLine();
+        if (answer == "0") {
+            doctorReq(manager);
+        } else {
+            File.removeDraft(doctor);
+
+            System.out.println("doctor request with ID : " + doctor.getId() + " removed successfully");
+
+            connectionRequest(manager);
+        }
+
     }
 
     public static void manageNurses() throws SQLException, ClassNotFoundException {
